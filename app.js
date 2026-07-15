@@ -123,8 +123,8 @@ function openSurveyModal(id) {
       <div><span>남은 자리</span><strong>${Number(survey.remaining)}명</strong></div>
     </div>
     <div class="draw-box">
-      <strong>◎ 모아폼이 직접 추첨해요</strong>
-      <p>설문 종료 후 주최 측이 아닌 모아폼이 추첨을 진행하고 결과를 안내합니다.</p>
+      <strong>◎ CASH CHECK가 직접 추첨해요</strong>
+      <p>설문 종료 후 주최 측이 아닌 CASH CHECK가 추첨을 진행하고 결과를 안내합니다.</p>
     </div>
     <div class="privacy-box">
       <strong>✓ 참여 전 개인정보 안내</strong>
