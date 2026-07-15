@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="개인정보 노출은 줄이고, 설문 경품 추첨은 투명하게 진행하는 설문 중계 플랫폼 모아폼" />
+  <title>모아폼 — 설문 찾기</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Manrope:wght@500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body class="survey-page">
+  <a class="skip-link" href="#survey-board">설문 목록으로 바로가기</a>
+
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a class="brand" href="./index.html" aria-label="모아폼 랜딩페이지">
+        <span class="brand-mark" aria-hidden="true">
+          <span></span><span></span><span></span>
+        </span>
+        <span>모아폼</span>
+      </a>
+
+      <nav class="desktop-nav" aria-label="주요 메뉴">
+        <a href="#survey-board">설문 찾기</a>
+        <a href="#how-it-works">이용 방법</a>
+        <a href="#trust">안전한 참여</a>
+      </nav>
+
+      <div class="nav-actions">
+        <div data-auth-slot></div>
+        <a class="button button-small button-dark" href="#survey-board">설문 둘러보기</a>
+        <button class="menu-button" id="menuButton" type="button" aria-label="메뉴 열기" aria-expanded="false">
+          <span></span><span></span>
+        </button>
+      </div>
+    </div>
+    <nav class="mobile-nav" id="mobileNav" aria-label="모바일 메뉴">
+      <a href="#survey-board">설문 찾기</a>
+      <a href="#how-it-works">이용 방법</a>
+      <a href="#trust">안전한 참여</a>
+      <div class="mobile-auth" data-auth-mobile></div>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero section-shell">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="eyebrow-dot"></span> 사람과 설문을 잇는 안전한 연결</div>
+        <h1>당신의 의견이,<br /><em>정당한 가치</em>가 되도록.</h1>
+        <p>개인정보는 필요한 만큼만, 경품과 당첨 인원은 미리 공개하고<br class="desktop-only" /> 추첨은 모아폼이 직접 투명하게 진행합니다.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#survey-board">내게 맞는 설문 찾기 <span aria-hidden="true">↗</span></a>
+        </div>
+        <div class="hero-proof" aria-label="플랫폼 특징">
+          <span><b>✓</b> 참여 전 수집 정보 확인</span>
+          <span><b>✓</b> 경품·당첨 인원 사전 공개</span>
+          <span><b>✓</b> 모아폼 직접 추첨</span>
+        </div>
+      </div>
+
+      <div class="hero-visual" aria-label="설문 참여 과정 미리보기">
+        <div class="orbit orbit-one"></div>
+        <div class="orbit orbit-two"></div>
+        <div class="floating-note note-top"><span>✓</span> 검증된 설문</div>
+        <div class="floating-note note-bottom"><span>◎</span> 공정한 추첨</div>
+        <article class="preview-card" id="featuredSurveyCard">
+          <div class="preview-head">
+            <div>
+              <p>RANDOM PICK · 추천 설문</p>
+              <span id="featuredDeadline">추천 설문을 고르는 중</span>
+            </div>
+            <span class="bookmark-icon" aria-hidden="true">↗</span>
+          </div>
+          <div class="preview-illustration" aria-hidden="true">
+            <div class="speech speech-a">A</div>
+            <div class="speech speech-b">B</div>
+            <div class="speech speech-c">C</div>
+            <div class="cursor-shape">↖</div>
+          </div>
+          <span class="category-label" id="featuredCategory">추천</span>
+          <h2 id="featuredTitle">설문을 불러오는 중이에요</h2>
+          <div class="preview-meta"><span id="featuredDuration">예상 시간 확인 중</span><span>모바일 참여</span></div>
+          <div class="preview-reward"><span>추첨 경품</span><strong id="featuredReward">경품 확인 중</strong></div>
+          <span class="preview-cta">추천 설문 자세히 보기 <b aria-hidden="true">→</b></span>
+          <button class="preview-hit" id="featuredSurveyButton" type="button" aria-label="추천 설문 자세히 보기"></button>
+        </article>
+      </div>
+    </section>
+
+    <section class="trust-strip" id="trust" aria-label="모아폼 운영 원칙">
+      <div class="section-shell trust-grid">
+        <div class="trust-item"><span class="trust-icon shield-icon" aria-hidden="true">◇</span><div><strong>최소 정보만 요청</strong><p>꼭 필요한 정보만 확인해요</p></div></div>
+        <div class="trust-item"><span class="trust-icon" aria-hidden="true">◎</span><div><strong>모아폼 직접 추첨</strong><p>설문 주최 측 대신 공정하게 진행해요</p></div></div>
+        <div class="trust-item"><span class="trust-icon" aria-hidden="true">✓</span><div><strong>추첨 조건 공개</strong><p>경품과 당첨 인원을 미리 확인해요</p></div></div>
+      </div>
+    </section>
+
+    <section class="survey-section" id="survey-board">
+      <div class="section-shell">
+        <div class="section-heading">
+          <div>
+            <p class="kicker">OPEN SURVEYS</p>
+            <h2>지금 참여할 수 있는 설문</h2>
+            <p>관심 있는 주제를 골라 가볍게 의견을 나눠보세요.</p>
+          </div>
+          <div class="result-summary"><strong id="surveyCount">0</strong>개의 설문이 열려 있어요</div>
+        </div>
+
+        <div class="survey-toolbar">
+          <div class="filter-tabs" id="categoryFilters" role="group" aria-label="설문 카테고리 필터">
+            <button class="filter-chip active" type="button" data-category="전체">전체</button>
+            <button class="filter-chip" type="button" data-category="라이프스타일">라이프스타일</button>
+            <button class="filter-chip" type="button" data-category="IT·서비스">IT·서비스</button>
+            <button class="filter-chip" type="button" data-category="식품">식품</button>
+            <button class="filter-chip" type="button" data-category="교육">교육</button>
+          </div>
+          <label class="search-box">
+            <span aria-hidden="true">⌕</span>
+            <span class="sr-only">설문 검색</span>
+            <input id="searchInput" type="search" placeholder="관심 주제를 검색해보세요" autocomplete="off" />
+          </label>
+        </div>
+
+        <div class="survey-grid" id="surveyGrid" aria-live="polite"></div>
+        <div class="empty-state" id="emptyState" hidden>
+          <span>⌕</span>
+          <h3>조건에 맞는 설문이 없어요</h3>
+          <p>다른 검색어나 카테고리로 찾아보세요.</p>
+          <button class="button button-ghost" id="resetFilters" type="button">필터 초기화</button>
+        </div>
+        <div class="load-more-wrap" id="loadMoreWrap" hidden>
+          <button class="load-more-button" id="loadMoreButton" type="button" aria-controls="surveyGrid">더 보기 <span aria-hidden="true">↓</span></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="process-section" id="how-it-works">
+      <div class="section-shell process-layout">
+        <div class="process-intro">
+          <p class="kicker">HOW IT WORKS</p>
+          <h2>참여는 가볍게,<br />보호는 꼼꼼하게.</h2>
+          <p>모아폼은 참여 전 경품 안내부터 설문 종료 후 추첨 결과까지 필요한 정보를 투명하게 보여줍니다.</p>
+          <a href="#trust" class="inline-link">안전한 참여 원칙 보기 <span>→</span></a>
+        </div>
+        <ol class="process-list">
+          <li><span>01</span><div><h3>내게 맞는 설문 찾기</h3><p>주제, 예상 시간, 추첨 경품과 당첨 인원을 비교하고 골라요.</p></div></li>
+          <li><span>02</span><div><h3>수집 정보 먼저 확인하기</h3><p>어떤 정보가 왜 필요한지 참여 전에 확인해요.</p></div></li>
+          <li><span>03</span><div><h3>설문 참여하기</h3><p>외부 설문에서도 고유 참여 코드로 안전하게 연결돼요.</p></div></li>
+          <li><span>04</span><div><h3>추첨 결과 확인하기</h3><p>설문 종료 후 모아폼이 직접 추첨하고, 당첨자에게 기프티콘을 보내드려요.</p></div></li>
+        </ol>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="section-shell footer-grid">
+      <div>
+        <a class="brand footer-brand" href="./index.html"><span class="brand-mark"><span></span><span></span><span></span></span><span>모아폼</span></a>
+        <p>의견의 가치를 공정하게 연결합니다.</p>
+      </div>
+      <div class="footer-links">
+        <div><strong>서비스</strong><a href="#survey-board">설문 찾기</a><a href="#how-it-works">이용 방법</a></div>
+        <div><strong>안내</strong><a href="#trust">개인정보 보호</a><a href="#trust">추첨 정책</a><button type="button" data-toast="자주 묻는 질문 페이지는 다음 단계에서 연결할 수 있어요.">자주 묻는 질문</button></div>
+        <div><strong>문의</strong><a href="mailto:hello@moaform.kr">hello@moaform.kr</a><span>평일 10:00–18:00</span></div>
+      </div>
+    </div>
+    <div class="section-shell footer-bottom"><span>© 2026 MOAFORM. All rights reserved.</span><span>서비스 이용약관 · 개인정보 처리방침</span></div>
+  </footer>
+
+  <div class="modal-backdrop" id="surveyModal" hidden>
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="modal-close" id="modalClose" type="button" aria-label="닫기">×</button>
+      <div id="modalContent"></div>
+    </section>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="./survey-data.js" defer></script>
+  <script src="./auth.js" defer></script>
+  <script src="./app.js" defer></script>
+</body>
+</html>

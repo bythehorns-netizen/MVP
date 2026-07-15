@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="모아폼 회원가입 및 로그인" />
+  <title>모아폼 — 로그인·회원가입</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Manrope:wght@500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body class="auth-page">
+  <a class="skip-link" href="#authContent">로그인 영역으로 바로가기</a>
+
+  <header class="site-header auth-header">
+    <div class="nav-wrap">
+      <a class="brand" href="./index.html" aria-label="모아폼 홈">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span>모아폼</span>
+      </a>
+      <a class="button button-small button-dark" href="./surveys.html">설문 둘러보기</a>
+    </div>
+  </header>
+
+  <main class="auth-main" id="authContent">
+    <section class="auth-shell" aria-labelledby="authTitle">
+      <div class="auth-intro">
+        <p class="auth-kicker">FAIR PARTICIPATION</p>
+        <h1 id="authTitle">한 번의 참여가,<br />공정한 추첨으로.</h1>
+        <p>회원별 참여 기록으로 중복 응답을 줄이고<br />당첨 대상자를 정확하게 관리합니다.</p>
+        <ul class="auth-benefits">
+          <li><b>✓</b> 같은 계정의 설문 중복 참여 방지</li>
+          <li><b>✓</b> 경품별 추첨 대상자 자동 기록</li>
+          <li><b>✓</b> 비밀번호는 원문 대신 단방향 해시로 저장</li>
+        </ul>
+      </div>
+
+      <div class="auth-panel">
+        <div id="authForms">
+          <div class="auth-panel-head">
+            <h2>다시 만나서 반가워요.</h2>
+            <p>로그인하거나 새 계정을 만들어 설문에 참여하세요.</p>
+          </div>
+
+          <div class="auth-tabs" role="tablist" aria-label="회원 메뉴">
+            <button class="auth-tab active" id="loginTab" type="button" role="tab" aria-selected="true" aria-controls="loginPanel" data-auth-tab="login">로그인</button>
+            <button class="auth-tab" id="signupTab" type="button" role="tab" aria-selected="false" aria-controls="signupPanel" data-auth-tab="signup">회원가입</button>
+          </div>
+
+          <section id="loginPanel" role="tabpanel" aria-labelledby="loginTab">
+            <form class="auth-form" id="loginForm" novalidate>
+              <div class="auth-field">
+                <label for="loginId">아이디</label>
+                <input id="loginId" name="userId" type="text" autocomplete="username" placeholder="아이디를 입력하세요" required />
+              </div>
+              <div class="auth-field">
+                <label for="loginPassword">비밀번호</label>
+                <input id="loginPassword" name="password" type="password" autocomplete="current-password" placeholder="비밀번호를 입력하세요" required />
+              </div>
+              <p class="auth-message" id="loginMessage" role="status" aria-live="polite"></p>
+              <button class="button button-primary button-full auth-submit" type="submit">로그인</button>
+              <p class="auth-switch">아직 회원이 아니신가요? <button type="button" data-switch-auth="signup">회원가입</button></p>
+            </form>
+          </section>
+
+          <section id="signupPanel" role="tabpanel" aria-labelledby="signupTab" hidden>
+            <form class="auth-form" id="signupForm" novalidate>
+              <div class="auth-field">
+                <label for="signupId">아이디</label>
+                <input id="signupId" name="userId" type="text" autocomplete="username" placeholder="영문·숫자 4~20자" minlength="4" maxlength="20" required />
+                <small>영문으로 시작하고 영문, 숫자, 밑줄만 사용할 수 있어요.</small>
+              </div>
+              <div class="auth-field">
+                <label for="signupName">이름</label>
+                <input id="signupName" name="name" type="text" autocomplete="name" placeholder="추첨 대상자 확인용 이름" maxlength="30" required />
+              </div>
+              <div class="auth-field">
+                <label for="signupPhone">휴대전화</label>
+                <input id="signupPhone" name="phone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="01012345678" maxlength="13" required />
+                <small>당첨 시 기프티콘 전달에만 사용합니다.</small>
+              </div>
+              <div class="auth-field">
+                <label for="signupPassword">비밀번호</label>
+                <input id="signupPassword" name="password" type="password" autocomplete="new-password" placeholder="영문과 숫자를 포함한 8자 이상" minlength="8" required />
+              </div>
+              <div class="auth-field">
+                <label for="signupPasswordConfirm">비밀번호 확인</label>
+                <input id="signupPasswordConfirm" name="passwordConfirm" type="password" autocomplete="new-password" placeholder="비밀번호를 다시 입력하세요" required />
+              </div>
+              <label class="auth-agreement">
+                <input id="privacyConsent" name="privacyConsent" type="checkbox" required />
+                <span>중복 참여 확인과 경품 추첨·전달을 위한 회원정보 수집 및 이용에 동의합니다.</span>
+              </label>
+              <p class="auth-message" id="signupMessage" role="status" aria-live="polite"></p>
+              <button class="button button-primary button-full auth-submit" type="submit">회원가입</button>
+              <p class="auth-switch">이미 계정이 있으신가요? <button type="button" data-switch-auth="login">로그인</button></p>
+            </form>
+          </section>
+
+          <p class="auth-security">MVP에서는 이 브라우저에만 계정과 참여 기록이 저장됩니다.<br />공용 기기에서는 사용 후 로그아웃해 주세요.</p>
+        </div>
+
+        <section class="account-view" id="accountView" aria-labelledby="accountTitle" hidden>
+          <div class="account-badge" aria-hidden="true">✓</div>
+          <h2 id="accountTitle"><span id="accountName"></span>님, 로그인했어요.</h2>
+          <p>회원별 참여 기록을 기준으로 중복 참여를 확인합니다.</p>
+          <div class="account-summary">
+            <div><span>아이디</span><strong id="accountId"></strong></div>
+            <div><span>참여 설문</span><strong><span id="participationCount">0</span>개</strong></div>
+          </div>
+          <div class="participation-history">
+            <h3>내 설문 참여 기록</h3>
+            <ul class="participation-list" id="participationList"></ul>
+          </div>
+          <div class="account-actions">
+            <a class="button button-primary" href="./surveys.html">설문 둘러보기</a>
+            <button class="button button-ghost" type="button" data-auth-logout>로그아웃</button>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <script src="./survey-data.js" defer></script>
+  <script src="./auth.js" defer></script>
+</body>
+</html>

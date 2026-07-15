@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="받고 싶은 경품을 먼저 고르고 연결된 설문에 참여하는 모아폼" />
+  <title>모아폼 — 경품으로 설문 고르기</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Manrope:wght@500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body class="landing-page">
+  <a class="skip-link" href="#prizes">경품 목록으로 바로가기</a>
+
+  <header class="site-header landing-header">
+    <div class="nav-wrap">
+      <a class="brand" href="./index.html" aria-label="모아폼 홈">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span>모아폼</span>
+      </a>
+      <div class="nav-actions">
+        <div data-auth-slot></div>
+        <a class="button button-small button-dark" href="./surveys.html">전체 설문 보기</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="landing-main">
+    <section class="opening-section" id="prizes" aria-labelledby="openingTitle">
+      <div class="section-shell opening-content">
+        <div class="opening-copy">
+          <p>PRIZE FIRST</p>
+          <h1 id="openingTitle">받고 싶은 경품으로<br />설문을 골라보세요.</h1>
+          <span>경품을 누르면 연결된 설문 페이지로 이동합니다.</span>
+        </div>
+        <div class="prize-grid" id="openingPrizeGrid" aria-live="polite"></div>
+        <a class="opening-skip" href="./surveys.html">전체 설문 보기 <span aria-hidden="true">→</span></a>
+      </div>
+    </section>
+  </main>
+
+  <script src="./survey-data.js" defer></script>
+  <script src="./auth.js" defer></script>
+  <script src="./landing.js" defer></script>
+</body>
+</html>
