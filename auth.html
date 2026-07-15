@@ -99,7 +99,7 @@
             </form>
           </section>
 
-          <p class="auth-security">MVP에서는 이 브라우저에만 계정과 참여 기록이 저장됩니다.<br />공용 기기에서는 사용 후 로그아웃해 주세요.</p>
+          <p class="auth-security">계정은 Supabase Auth로 관리됩니다. 비밀번호는 CASH CHECK가 원문으로 저장하지 않습니다.<br />공용 기기에서는 사용 후 로그아웃해 주세요.</p>
         </div>
 
         <section class="account-view" id="accountView" aria-labelledby="accountTitle" hidden>
@@ -124,6 +124,7 @@
   </main>
 
   <script src="./survey-data.js" defer></script>
+  <script src="/api/config.js" defer></script>
   <script src="./auth.js" defer></script>
 </body>
 </html>

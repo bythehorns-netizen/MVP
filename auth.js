@@ -1,11 +1,11 @@
 (() => {
   "use strict";
 
-  const KEYS = {
-    users: "moaform_users_v1",
-    session: "moaform_session_v1",
-    participations: "moaform_participations_v1"
-  };
+  const SESSION_KEY = "cashcheck_supabase_session_v1";
+  const AUTH_EMAIL_DOMAIN = "cashcheck.local";
+
+  let activeSession = readJSON(SESSION_KEY, null);
+  let currentUser = activeSession?.user ? normalizeUser(activeSession.user) : null;
 
   function readJSON(key, fallback) {
     try {
@@ -24,73 +24,174 @@
     return String(value || "").trim().toLowerCase();
   }
 
-  function createSalt() {
-    const bytes = new Uint8Array(16);
-    window.crypto.getRandomValues(bytes);
-    return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
+  function idToEmail(id) {
+    return `${normalizeId(id)}@${AUTH_EMAIL_DOMAIN}`;
   }
 
-  async function hashPassword(password, salt) {
-    if (!window.crypto?.subtle) throw new Error("secure-context-required");
-    const encoder = new TextEncoder();
-    const keyMaterial = await window.crypto.subtle.importKey(
-      "raw",
-      encoder.encode(password),
-      "PBKDF2",
-      false,
-      ["deriveBits"]
-    );
-    const digest = await window.crypto.subtle.deriveBits(
-      { name: "PBKDF2", hash: "SHA-256", salt: encoder.encode(salt), iterations: 150000 },
-      keyMaterial,
-      256
-    );
-    return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("");
+  function emailToDisplayId(email, metadata = {}) {
+    return metadata.display_id || metadata.username || String(email || "").split("@")[0] || "member";
   }
 
-  function getUsers() {
-    const users = readJSON(KEYS.users, []);
-    return Array.isArray(users) ? users : [];
+  function getConfig() {
+    const config = window.CASHCHECK_CONFIG || {};
+    return {
+      supabaseUrl: String(config.supabaseUrl || "").replace(/\/+$/, ""),
+      supabaseAnonKey: String(config.supabaseAnonKey || "")
+    };
+  }
+
+  function isConfigured() {
+    const { supabaseUrl, supabaseAnonKey } = getConfig();
+    return Boolean(supabaseUrl && supabaseAnonKey);
+  }
+
+  async function authRequest(path, options = {}) {
+    const { supabaseUrl, supabaseAnonKey } = getConfig();
+    if (!supabaseUrl || !supabaseAnonKey) throw new Error("missing-supabase-config");
+
+    const headers = {
+      apikey: supabaseAnonKey,
+      "Content-Type": "application/json"
+    };
+    if (options.token) headers.Authorization = `Bearer ${options.token}`;
+
+    const response = await fetch(`${supabaseUrl}${path}`, {
+      method: options.method || "GET",
+      headers,
+      body: options.body ? JSON.stringify(options.body) : undefined
+    });
+    const payload = await response.json().catch(() => null);
+
+    if (!response.ok) {
+      const message = payload?.msg || payload?.message || payload?.error_description || payload?.error || "request-failed";
+      throw new Error(message);
+    }
+    return payload;
+  }
+
+  function normalizeParticipations(value) {
+    return Array.isArray(value)
+      ? value
+          .filter((item) => item?.surveyId && item?.startedAt)
+          .map((item) => ({
+            surveyId: String(item.surveyId),
+            startedAt: String(item.startedAt)
+          }))
+      : [];
+  }
+
+  function normalizeUser(user) {
+    const metadata = user?.user_metadata || {};
+    const displayId = emailToDisplayId(user?.email, metadata);
+    return {
+      id: user?.id || normalizeId(displayId),
+      email: user?.email || idToEmail(displayId),
+      displayId,
+      username: metadata.username || normalizeId(displayId),
+      name: metadata.name || displayId,
+      phone: metadata.phone || "",
+      participations: normalizeParticipations(metadata.participations),
+      raw: user
+    };
+  }
+
+  function saveSession(session) {
+    if (!session?.access_token || !session?.user) return null;
+    const normalized = {
+      ...session,
+      expires_at: session.expires_at || Math.floor(Date.now() / 1000) + Number(session.expires_in || 3600)
+    };
+    activeSession = normalized;
+    currentUser = normalizeUser(normalized.user);
+    writeJSON(SESSION_KEY, normalized);
+    return normalized;
+  }
+
+  function clearSession() {
+    activeSession = null;
+    currentUser = null;
+    window.localStorage.removeItem(SESSION_KEY);
   }
 
   function getCurrentUser() {
-    const session = readJSON(KEYS.session, null);
-    if (!session?.userId) return null;
-    return getUsers().find((user) => user.id === session.userId) || null;
+    return currentUser;
+  }
+
+  async function refreshSessionIfNeeded() {
+    if (!activeSession?.refresh_token) return null;
+    const expiresAt = Number(activeSession.expires_at || 0);
+    if (expiresAt && expiresAt - Math.floor(Date.now() / 1000) > 90) return activeSession;
+
+    const refreshed = await authRequest("/auth/v1/token?grant_type=refresh_token", {
+      method: "POST",
+      body: { refresh_token: activeSession.refresh_token }
+    });
+    return saveSession(refreshed);
+  }
+
+  async function fetchCurrentUser() {
+    const session = await refreshSessionIfNeeded();
+    if (!session?.access_token) return null;
+    const user = await authRequest("/auth/v1/user", { token: session.access_token });
+    saveSession({ ...session, user });
+    return currentUser;
   }
 
   function logout() {
-    window.localStorage.removeItem(KEYS.session);
+    const token = activeSession?.access_token;
+    clearSession();
+    renderAuthSlots();
+    renderAuthPage();
+    if (token && isConfigured()) {
+      authRequest("/auth/v1/logout", { method: "POST", token }).catch(() => {});
+    }
+  }
+
+  function getParticipations(userId = currentUser?.id) {
+    if (!currentUser || userId !== currentUser.id) return [];
+    return [...currentUser.participations];
+  }
+
+  function hasParticipated(surveyId) {
+    return Boolean(currentUser && currentUser.participations.some((item) => item.surveyId === String(surveyId)));
+  }
+
+  async function updateUserMetadata(metadata) {
+    const session = await refreshSessionIfNeeded();
+    if (!session?.access_token || !activeSession?.user) throw new Error("login-required");
+    const nextMetadata = { ...(activeSession.user.user_metadata || {}), ...metadata };
+    const response = await authRequest("/auth/v1/user", {
+      method: "PUT",
+      token: session.access_token,
+      body: { data: nextMetadata }
+    });
+    const user = response?.user || response;
+    saveSession({ ...session, user });
     renderAuthSlots();
     renderAuthPage();
   }
 
-  function getParticipations(userId = getCurrentUser()?.id) {
-    if (!userId) return [];
-    const records = readJSON(KEYS.participations, []);
-    return (Array.isArray(records) ? records : []).filter((item) => item.userId === userId);
-  }
-
-  function hasParticipated(surveyId) {
-    const user = getCurrentUser();
-    return Boolean(user && getParticipations(user.id).some((item) => item.surveyId === String(surveyId)));
-  }
-
   function registerParticipation(surveyId) {
-    const user = getCurrentUser();
-    if (!user) return { ok: false, reason: "login-required" };
-    const savedRecords = readJSON(KEYS.participations, []);
-    const records = Array.isArray(savedRecords) ? savedRecords : [];
-    if (records.some((item) => item.userId === user.id && item.surveyId === String(surveyId))) {
-      return { ok: false, reason: "duplicate" };
+    if (!currentUser) return { ok: false, reason: "login-required" };
+    if (hasParticipated(surveyId)) return { ok: false, reason: "duplicate" };
+
+    const nextRecords = [
+      ...currentUser.participations,
+      { surveyId: String(surveyId), startedAt: new Date().toISOString() }
+    ];
+    currentUser = { ...currentUser, participations: nextRecords };
+    if (activeSession?.user) {
+      const nextUser = {
+        ...activeSession.user,
+        user_metadata: {
+          ...(activeSession.user.user_metadata || {}),
+          participations: nextRecords
+        }
+      };
+      saveSession({ ...activeSession, user: nextUser });
     }
-    try {
-      records.push({ userId: user.id, surveyId: String(surveyId), startedAt: new Date().toISOString() });
-      writeJSON(KEYS.participations, records);
-      return { ok: true };
-    } catch (error) {
-      return { ok: false, reason: "storage-error" };
-    }
+    updateUserMetadata({ participations: nextRecords }).catch(() => {});
+    return { ok: true };
   }
 
   window.MoaAuth = { getCurrentUser, logout, getParticipations, hasParticipated, registerParticipation };
@@ -176,6 +277,15 @@
       : '<li class="participation-empty">아직 참여한 설문이 없어요.</li>';
   }
 
+  function authErrorMessage(error) {
+    const message = String(error?.message || error || "").toLowerCase();
+    if (message.includes("missing-supabase-config")) return "Supabase 연결 설정을 불러오지 못했어요. Vercel 배포 환경에서 다시 시도해 주세요.";
+    if (message.includes("already") || message.includes("registered")) return "이미 사용 중인 아이디입니다.";
+    if (message.includes("invalid login") || message.includes("invalid credentials")) return "아이디 또는 비밀번호가 일치하지 않습니다.";
+    if (message.includes("email not confirmed") || message.includes("confirm")) return "Supabase Auth의 이메일 확인 설정이 켜져 있어요. 아이디 로그인을 쓰려면 이메일 확인을 꺼야 합니다.";
+    return "처리 중 문제가 발생했어요. 잠시 후 다시 시도해 주세요.";
+  }
+
   async function handleSignup(event) {
     event.preventDefault();
     const form = event.currentTarget;
@@ -189,26 +299,30 @@
     const passwordConfirm = String(formData.get("passwordConfirm") || "");
 
     if (!/^[a-zA-Z][a-zA-Z0-9_]{3,19}$/.test(displayId)) return setMessage(message, "아이디는 영문으로 시작하는 영문·숫자·밑줄 4~20자로 입력해 주세요.");
-    if (getUsers().some((user) => user.id === id)) return setMessage(message, "이미 사용 중인 아이디입니다.");
     if (name.length < 2) return setMessage(message, "추첨 대상자 확인을 위해 이름을 2자 이상 입력해 주세요.");
     if (!/^01[016789]\d{7,8}$/.test(phone)) return setMessage(message, "올바른 휴대전화 번호를 입력해 주세요.");
     if (password.length < 8 || !/[a-zA-Z]/.test(password) || !/\d/.test(password)) return setMessage(message, "비밀번호는 영문과 숫자를 포함해 8자 이상이어야 합니다.");
     if (password !== passwordConfirm) return setMessage(message, "비밀번호가 서로 일치하지 않습니다.");
     if (!formData.get("privacyConsent")) return setMessage(message, "회원정보 수집 및 이용에 동의해 주세요.");
+    if (!isConfigured()) return setMessage(message, "Supabase 연결 설정을 불러오지 못했어요. Vercel 배포 환경에서 다시 시도해 주세요.");
 
     const submit = form.querySelector('[type="submit"]');
     submit.disabled = true;
     try {
-      const salt = createSalt();
-      const passwordHash = await hashPassword(password, salt);
-      const users = getUsers();
-      users.push({ id, displayId, name, phone, salt, passwordHash, createdAt: new Date().toISOString() });
-      writeJSON(KEYS.users, users);
-      writeJSON(KEYS.session, { userId: id, loginAt: new Date().toISOString() });
+      const profile = { username: id, display_id: displayId, name, phone, participations: [] };
+      const signup = await authRequest("/auth/v1/signup", {
+        method: "POST",
+        body: { email: idToEmail(id), password, data: profile }
+      });
+      const session = signup?.session || await authRequest("/auth/v1/token?grant_type=password", {
+        method: "POST",
+        body: { email: idToEmail(id), password }
+      });
+      saveSession(session);
       setMessage(message, "회원가입이 완료됐어요. 설문 페이지로 이동합니다.", "success");
       window.setTimeout(() => { window.location.href = safeNextPath(); }, 650);
     } catch (error) {
-      setMessage(message, "이 브라우저에서는 안전한 비밀번호 저장 기능을 사용할 수 없어요.");
+      setMessage(message, authErrorMessage(error));
       submit.disabled = false;
     }
   }
@@ -221,22 +335,20 @@
     const id = normalizeId(formData.get("userId"));
     const password = String(formData.get("password") || "");
     if (!id || !password) return setMessage(message, "아이디와 비밀번호를 모두 입력해 주세요.");
-    const user = getUsers().find((item) => item.id === id);
-    if (!user) return setMessage(message, "아이디 또는 비밀번호가 일치하지 않습니다.");
+    if (!isConfigured()) return setMessage(message, "Supabase 연결 설정을 불러오지 못했어요. Vercel 배포 환경에서 다시 시도해 주세요.");
 
     const submit = form.querySelector('[type="submit"]');
     submit.disabled = true;
     try {
-      const passwordHash = await hashPassword(password, user.salt);
-      if (passwordHash !== user.passwordHash) {
-        submit.disabled = false;
-        return setMessage(message, "아이디 또는 비밀번호가 일치하지 않습니다.");
-      }
-      writeJSON(KEYS.session, { userId: user.id, loginAt: new Date().toISOString() });
+      const session = await authRequest("/auth/v1/token?grant_type=password", {
+        method: "POST",
+        body: { email: idToEmail(id), password }
+      });
+      saveSession(session);
       setMessage(message, "로그인됐어요. 설문 페이지로 이동합니다.", "success");
       window.setTimeout(() => { window.location.href = safeNextPath(); }, 450);
     } catch (error) {
-      setMessage(message, "로그인 처리 중 문제가 발생했어요. 다시 시도해 주세요.");
+      setMessage(message, authErrorMessage(error));
       submit.disabled = false;
     }
   }
@@ -255,6 +367,15 @@
 
   renderAuthSlots();
   renderAuthPage();
+  fetchCurrentUser().then(() => {
+    renderAuthSlots();
+    renderAuthPage();
+  }).catch(() => {
+    clearSession();
+    renderAuthSlots();
+    renderAuthPage();
+  });
+
   const initialMode = new URLSearchParams(window.location.search).get("mode");
   if (document.getElementById("authForms") && !getCurrentUser()) setTab(initialMode);
   document.getElementById("loginForm")?.addEventListener("submit", handleLogin);
