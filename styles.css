@@ -170,8 +170,11 @@ button { color: inherit; }
 .section-heading > div > p:last-child { margin: 13px 0 0; color: var(--muted); font-size: 15px; }
 .result-summary { flex: 0 0 auto; padding-bottom: 4px; color: var(--muted); font-size: 13px; }
 .result-summary strong { color: var(--blue); font: 800 23px "Manrope"; }
-.survey-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin: 42px 0 30px; }
-.filter-tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+.survey-toolbar { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; margin: 42px 0 30px; }
+.filter-groups { min-width: 0; display: grid; gap: 12px; }
+.filter-row { min-width: 0; display: flex; align-items: center; gap: 12px; }
+.filter-label { flex: 0 0 44px; color: var(--muted); font-size: 12px; font-weight: 700; }
+.filter-tabs { min-width: 0; flex: 1; display: flex; flex-wrap: wrap; gap: 8px; }
 .filter-chip { padding: 10px 16px; border: 1px solid var(--line); border-radius: 999px; background: white; color: #5b6271; font-size: 13px; font-weight: 600; cursor: pointer; transition: .18s; }
 .filter-chip:hover, .filter-chip.active { border-color: var(--navy); background: var(--navy); color: white; }
 .search-box { width: 270px; height: 44px; display: flex; align-items: center; gap: 8px; padding: 0 15px; border: 1px solid var(--line); border-radius: 12px; background: white; }
