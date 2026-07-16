@@ -1015,7 +1015,8 @@ body, button, input, select, textarea { font-family: Inter, Circular, -apple-sys
 @media (prefers-reduced-motion: reduce) {
   .gifticon-track { animation-play-state: paused; }
 }
-.opening-skip { color: var(--air-ink); border-color: var(--air-ink); text-transform: none; }
+.opening-skip { width: max-content; min-height: 36px; gap: 6px; padding: 0 11px; color: var(--air-ink); border-color: var(--air-ink); font-size: 12px; letter-spacing: 0; text-transform: none; }
+.opening-skip span { font-size: 14px; }
 
 /* Auth */
 .auth-page { background: var(--air-soft); }
