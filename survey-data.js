@@ -11,6 +11,7 @@ const MOAFORM_SURVEYS = [
     deadline: "D-2",
     privacy: "연령대·소비 경험",
     researcher: "모아리서치",
+    surveyUrl: "https://forms.gle/CWT7nSjuny5QZztEA",
     color: "#eef0ff",
     ink: "#425bea"
   },
@@ -26,7 +27,7 @@ const MOAFORM_SURVEYS = [
     deadline: "D-1",
     privacy: "직업군·서비스 경험",
     researcher: "테크인사이트랩",
-    surveyUrl: "https://docs.google.com/forms/d/e/1FAIpQLScceBWndk7VBazmIsQauAWTeO3iXqqLor3S2vT5yDeIuRrokA/viewform?usp=publish-editor",
+    surveyUrl: "https://forms.gle/CWT7nSjuny5QZztEA",
     color: "#e4f7ed",
     ink: "#147a4c"
   },
@@ -42,7 +43,7 @@ const MOAFORM_SURVEYS = [
     deadline: "D-4",
     privacy: "연령대·식품 선호",
     researcher: "데일리푸드",
-    surveyUrl: "https://docs.google.com/forms/d/e/1FAIpQLSfm_HHdA645PWMGS9RXm9cn0i0CzyPn1H9Pw01KksyLGBaTXQ/viewform",
+    surveyUrl: "https://forms.gle/CWT7nSjuny5QZztEA",
     color: "#fff3cc",
     ink: "#9a6a00"
   },
@@ -58,6 +59,7 @@ const MOAFORM_SURVEYS = [
     deadline: "D-5",
     privacy: "학습 단계·수강 경험",
     researcher: "배움연구소",
+    surveyUrl: "https://forms.gle/CWT7nSjuny5QZztEA",
     color: "#ffeae4",
     ink: "#c34d3d"
   },
@@ -73,7 +75,7 @@ const MOAFORM_SURVEYS = [
     deadline: "D-3",
     privacy: "거주 형태·연령대",
     researcher: "어반리빙랩",
-    surveyUrl: "https://docs.google.com/forms/d/e/1FAIpQLScceBWndk7VBazmIsQauAWTeO3iXqqLor3S2vT5yDeIuRrokA/viewform?usp=publish-editor",
+    surveyUrl: "https://forms.gle/CWT7nSjuny5QZztEA",
     color: "#e9f4ff",
     ink: "#2471a8"
   },
@@ -89,7 +91,7 @@ const MOAFORM_SURVEYS = [
     deadline: "D-7",
     privacy: "결제 서비스 경험",
     researcher: "UX그로스팀",
-    surveyUrl: "https://docs.google.com/forms/d/e/1FAIpQLSfm_HHdA645PWMGS9RXm9cn0i0CzyPn1H9Pw01KksyLGBaTXQ/viewform",
+    surveyUrl: "https://forms.gle/CWT7nSjuny5QZztEA",
     color: "#f2eaff",
     ink: "#7651b6"
   },
@@ -105,6 +107,7 @@ const MOAFORM_SURVEYS = [
     deadline: "D-6",
     privacy: "연령대·뷰티 구매 경험",
     researcher: "뷰티인사이트",
+    surveyUrl: "https://forms.gle/CWT7nSjuny5QZztEA",
     color: "#eef7dd",
     ink: "#4f7224"
   },
@@ -120,6 +123,7 @@ const MOAFORM_SURVEYS = [
     deadline: "D-4",
     privacy: "연령대·배달앱 이용 경험",
     researcher: "푸드트렌드랩",
+    surveyUrl: "https://forms.gle/CWT7nSjuny5QZztEA",
     color: "#e2f8f6",
     ink: "#16847c"
   },
@@ -135,6 +139,7 @@ const MOAFORM_SURVEYS = [
     deadline: "D-8",
     privacy: "연령대·AI 도구 사용 경험",
     researcher: "에듀테크리서치",
+    surveyUrl: "https://forms.gle/CWT7nSjuny5QZztEA",
     color: "#e7f3ff",
     ink: "#1d66aa"
   }
