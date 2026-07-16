@@ -1098,6 +1098,8 @@ body, button, input, select, textarea { font-family: Inter, Circular, -apple-sys
 .survey-page .preview-card { justify-self: center; transform: none; }
 .survey-page .auth-links { align-items: center; flex-direction: row; }
 .survey-page .auth-links a { justify-content: center; }
+.site-header .auth-login-link { min-height: 40px; display: inline-flex; align-items: center; padding: 0 12px; color: var(--air-ink); background: #fff; border: 1px solid var(--air-line); border-radius: 8px; }
+.site-header .auth-login-link:hover { color: var(--air-muted); background: #fff; border-color: #b0b0b0; }
 
 .survey-page .random-pick-illustration { display: grid; min-height: 230px; place-items: center; background: #fff5f7; }
 .survey-page .random-pick-illustration::before, .survey-page .random-pick-illustration::after { display: none; }
