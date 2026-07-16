@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Manrope:wght@500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="icon" href="./assets/cash-check-logo.jpg" />
-  <link rel="stylesheet" href="./styles.css?v=20260716-2" />
+  <link rel="stylesheet" href="./styles.css?v=20260716-3" />
 </head>
 <body class="survey-page">
   <a class="skip-link" href="#survey-board">설문 목록으로 바로가기</a>
@@ -25,11 +25,11 @@
         <a href="#survey-board">설문 찾기</a>
         <a href="#how-it-works">이용 방법</a>
         <a href="#trust">안전한 참여</a>
-        <a href="./admin-draw.html" data-master-only hidden>경품 추첨</a>
       </nav>
 
       <div class="nav-actions">
         <div data-auth-slot></div>
+        <a class="button button-small button-primary master-sidebar-button" href="./admin-draw.html"><span aria-hidden="true">◎</span> 경품 추첨</a>
         <a class="button button-small button-dark" href="#survey-board">설문 둘러보기</a>
         <button class="menu-button" id="menuButton" type="button" aria-label="메뉴 열기" aria-expanded="false">
           <span></span><span></span>
@@ -40,7 +40,7 @@
       <a href="#survey-board">설문 찾기</a>
       <a href="#how-it-works">이용 방법</a>
       <a href="#trust">안전한 참여</a>
-      <a href="./admin-draw.html" data-master-only hidden>경품 추첨</a>
+      <a href="./admin-draw.html" class="mobile-draw-link">◎ 경품 추첨</a>
       <div class="mobile-auth" data-auth-mobile></div>
     </nav>
   </header>
@@ -181,7 +181,7 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="./survey-data.js" defer></script>
   <script src="/api/config.js" defer></script>
-  <script src="./auth.js?v=20260716-2" defer></script>
+  <script src="./auth.js?v=20260716-3" defer></script>
   <script src="./app.js" defer></script>
 </body>
 </html>

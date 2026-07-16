@@ -635,15 +635,15 @@ a:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid 
 .survey-page .desktop-nav a:nth-child(1)::before { content: "◉"; }
 .survey-page .desktop-nav a:nth-child(2)::before { content: "▤"; }
 .survey-page .desktop-nav a:nth-child(3)::before { content: "✓"; }
-.survey-page .desktop-nav a:nth-child(4)::before { content: "◎"; }
-.survey-page .desktop-nav a:nth-child(4) { color: #1ed760; }
-.survey-page .desktop-nav a:nth-child(4):hover { color: #fff; background: #1f1f1f; }
 .survey-page .nav-actions { align-items: stretch; flex-direction: column; gap: 10px; margin-top: auto; }
 .survey-page .nav-actions [data-auth-slot], .survey-page .auth-links, .survey-page .auth-user-menu { width: 100%; }
 .survey-page .auth-links { align-items: stretch; flex-direction: column; }
 .survey-page .auth-links a, .survey-page .auth-user-menu > * { justify-content: center; text-align: center; }
 .survey-page .auth-user-menu { flex-wrap: wrap; justify-content: center; padding: 12px; background: #181818; border-radius: 8px; }
 .survey-page .nav-actions > .button { width: 100%; }
+.survey-page .master-sidebar-button { display: flex; justify-content: center; gap: 8px; color: #000; background: #1ed760; }
+.survey-page .master-sidebar-button:hover { color: #000; background: #3be477; }
+.survey-page .mobile-draw-link { color: #1ed760; font-weight: 800; }
 .survey-page .menu-button, .survey-page .mobile-nav { display: none; }
 
 .survey-page .hero { width: 100%; min-height: 700px; grid-template-columns: .9fr 1.1fr; gap: 38px; padding: 54px clamp(32px, 5vw, 76px); background: linear-gradient(180deg, #292929 0%, #171717 62%, #121212 100%); }

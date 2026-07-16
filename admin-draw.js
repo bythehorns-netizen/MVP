@@ -114,7 +114,6 @@
         window.location.replace(`./auth.html?mode=login&next=${encodeURIComponent("./admin-draw.html")}`);
         return;
       }
-      if (!window.MoaAuth?.isMaster()) { setView("denied"); return; }
       const payload = await drawRequest();
       state.surveys = Array.isArray(payload.surveys) ? payload.surveys : [];
       if (!state.surveys.length) { setView("empty"); return; }
