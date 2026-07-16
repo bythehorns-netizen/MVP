@@ -121,14 +121,6 @@ function openSurveyModal(id) {
       <div><span>추첨 경품</span><strong>${formatReward(survey.reward)}</strong></div>
       <div><span>남은 시간</span><strong>${escapeHTML(survey.deadline)}</strong></div>
     </div>
-    <div class="draw-box">
-      <strong>◎ CASH CHECK가 직접 추첨해요</strong>
-      <p>설문 종료 후 주최 측이 아닌 CASH CHECK가 추첨을 진행하고 결과를 안내합니다.</p>
-    </div>
-    <div class="privacy-box">
-      <strong>✓ 참여 전 개인정보 안내</strong>
-      <p>이 설문은 ${escapeHTML(survey.privacy)} 정보만 요청합니다. 설문 응답과 경품 발송을 위한 연락 정보는 분리하여 관리할 예정입니다.</p>
-    </div>
     <p class="modal-description">등록 기관 · ${escapeHTML(survey.researcher)}</p>
     ${participationAction}`;
   surveyModal.hidden = false;
