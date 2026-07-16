@@ -240,23 +240,6 @@
     document.querySelectorAll("[data-master-only]").forEach((element) => {
       element.hidden = !isMaster();
     });
-    renderMasterLauncher();
-  }
-
-  function renderMasterLauncher() {
-    const existing = document.getElementById("masterDrawLauncher");
-    if (!isMaster()) {
-      existing?.remove();
-      return;
-    }
-    if (existing || document.body.classList.contains("draw-page")) return;
-    const launcher = document.createElement("a");
-    launcher.id = "masterDrawLauncher";
-    launcher.className = "master-draw-launcher";
-    launcher.href = "./admin-draw.html";
-    launcher.setAttribute("aria-label", "마스터 경품 추첨 페이지로 이동");
-    launcher.innerHTML = '<span aria-hidden="true">◉</span><span><small>QWER MASTER</small><strong>경품 추첨</strong></span><b aria-hidden="true">→</b>';
-    document.body.append(launcher);
   }
 
   function safeNextPath() {
