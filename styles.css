@@ -988,8 +988,8 @@ body, button, input, select, textarea { font-family: Inter, Circular, -apple-sys
 .gifticon-track { width: max-content; display: flex; animation: gifticon-scroll 42s linear infinite; will-change: transform; }
 .gifticon-belt:hover .gifticon-track, .gifticon-belt:focus-within .gifticon-track { animation-play-state: paused; }
 .gifticon-list { display: flex; gap: 18px; padding-right: 18px; }
-.gifticon-item { width: 280px; flex: 0 0 280px; overflow: hidden; background: #fff; border: 1px solid var(--air-line-soft); border-radius: 16px; box-shadow: var(--air-shadow); }
-.gifticon-item img { width: 100%; height: 176px; display: block; object-fit: contain; background: #f7f7f7; }
+.gifticon-item { width: 300px; flex: 0 0 300px; overflow: hidden; background: #fff; border: 1px solid var(--air-line-soft); border-radius: 16px; box-shadow: var(--air-shadow); }
+.gifticon-item img { width: 100%; height: 200px; display: block; object-fit: cover; object-position: center 8%; background: #f7f7f7; transform: scale(1.02); }
 .gifticon-item div { position: relative; min-height: 104px; padding: 16px 68px 17px 17px; }
 .gifticon-item span { display: block; margin-bottom: 6px; color: var(--air-muted); font-size: 11px; font-weight: 600; }
 .gifticon-item strong { display: block; color: var(--air-ink); font-size: 16px; line-height: 1.4; letter-spacing: -.25px; }
@@ -1002,8 +1002,8 @@ body, button, input, select, textarea { font-family: Inter, Circular, -apple-sys
   .gifticon-heading h2 { font-size: 27px; }
   .gifticon-heading > p { margin-top: 9px; font-size: 13px; }
   .gifticon-list { gap: 12px; padding-right: 12px; }
-  .gifticon-item { width: 236px; flex-basis: 236px; }
-  .gifticon-item img { height: 148px; }
+  .gifticon-item { width: 252px; flex-basis: 252px; }
+  .gifticon-item img { height: 168px; }
   .gifticon-item div { min-height: 96px; padding: 14px 60px 15px 15px; }
   .gifticon-item strong { font-size: 14px; }
   .gifticon-item b { right: 13px; top: 15px; }
