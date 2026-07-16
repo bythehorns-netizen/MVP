@@ -969,7 +969,8 @@ body, button, input, select, textarea { font-family: Inter, Circular, -apple-sys
 .opening-copy h1 { color: var(--air-ink); font-size: clamp(38px, 4.4vw, 58px); font-weight: 600; }
 .opening-copy > span { color: var(--air-muted); }
 .prize-card { background: #fff; border: 1px solid var(--air-line-soft); border-radius: 14px; }
-.prize-card:hover { background: #fff; border-color: var(--air-line); box-shadow: var(--air-shadow); }
+.landing-page .prize-card { box-shadow: 0 3px 10px rgba(0,0,0,.08), 0 12px 28px rgba(0,0,0,.07); transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
+.landing-page .prize-card:hover { background: #fff; border-color: var(--air-line); box-shadow: 0 6px 16px rgba(0,0,0,.1), 0 18px 38px rgba(0,0,0,.1); transform: translateY(-3px); }
 .prize-visual { border-radius: 14px; box-shadow: none; }
 .prize-info > span, .prize-info p { color: var(--air-muted); }
 .prize-info h2 { color: var(--air-ink); }
