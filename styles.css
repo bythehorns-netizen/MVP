@@ -1015,8 +1015,8 @@ body, button, input, select, textarea { font-family: Inter, Circular, -apple-sys
 @media (prefers-reduced-motion: reduce) {
   .gifticon-track { animation-play-state: paused; }
 }
-.opening-skip { width: max-content; min-height: 36px; gap: 6px; padding: 0 11px; color: var(--air-ink); border-color: var(--air-ink); font-size: 12px; letter-spacing: 0; text-transform: none; }
-.opening-skip span { font-size: 14px; }
+.opening-skip { width: fit-content; max-width: max-content; min-width: 0; min-height: 34px; justify-self: center; gap: 3px; padding: 0 6px 0 10px; color: var(--air-ink); border-color: var(--air-ink); font-size: 12px; letter-spacing: 0; text-transform: none; }
+.opening-skip span { font-size: 12px; }
 
 /* Auth */
 .auth-page { background: var(--air-soft); }
