@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const COLORS = ["#c8ff47", "#6ee7d8", "#ffd66e", "#ff8f79", "#9eb5ff", "#d5a7ff", "#86dc8c", "#ffb9d2"];
+  const COLORS = ["#ff385c", "#ffd1da", "#f7c7d2", "#f2f2f2", "#ff8fa5", "#ebebeb", "#e00b41", "#ffc2ce"];
   const state = { surveys: [], spinning: new Set() };
   const $ = (id) => document.getElementById(id);
   const elements = {
