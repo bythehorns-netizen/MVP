@@ -873,7 +873,7 @@ body, button, input, select, textarea { font-family: Inter, Circular, -apple-sys
 .text-button, .auth-logout { color: var(--air-ink); }
 .auth-user-chip { color: var(--air-ink); }
 
-.button { min-height: 48px; border-radius: 8px; font-size: 14px; font-weight: 600; letter-spacing: 0; text-transform: none; box-shadow: none; }
+.button { min-height: 48px; border-radius: 8px; font-size: 14px; font-weight: 600; letter-spacing: 0; text-transform: none; white-space: nowrap; box-shadow: none; }
 .button:hover { transform: none; }
 .button-primary, .survey-page .master-sidebar-button { color: #fff; background: var(--air-primary); }
 .button-primary:hover, .survey-page .master-sidebar-button:hover { color: #fff; background: var(--air-primary-active); }
