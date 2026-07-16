@@ -941,8 +941,8 @@ body, button, input, select, textarea { font-family: Inter, Circular, -apple-sys
 .search-box input { color: var(--air-ink); }
 .search-box input::placeholder { color: var(--air-muted); }
 .survey-grid { grid-template-columns: repeat(auto-fit, minmax(255px, 1fr)); gap: 20px 16px; }
-.survey-card { min-height: 330px; padding: 20px; color: var(--air-ink); background: #fff; border: 1px solid var(--air-line-soft); border-radius: 14px; box-shadow: none; }
-.survey-card:hover { background: #fff; border-color: var(--air-line); box-shadow: var(--air-shadow); transform: translateY(-2px); }
+.survey-card { min-height: 330px; padding: 20px; color: var(--air-ink); background: #fff; border: 1px solid var(--air-line-soft); border-radius: 14px; box-shadow: 0 3px 10px rgba(0,0,0,.08), 0 12px 28px rgba(0,0,0,.07); transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
+.survey-card:hover { background: #fff; border-color: var(--air-line); box-shadow: 0 6px 16px rgba(0,0,0,.1), 0 18px 38px rgba(0,0,0,.1); transform: translateY(-3px); }
 .survey-card::before { height: 7px; border-radius: 14px 14px 0 0; background: var(--card-ink, var(--air-primary)); }
 .card-category, .privacy-badge { color: var(--air-muted); background: var(--air-soft); border-radius: 9999px; }
 .card-dday { color: var(--air-primary); }
