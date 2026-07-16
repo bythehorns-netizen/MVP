@@ -19,10 +19,6 @@ const modalContent = document.getElementById("modalContent");
 const modalClose = document.getElementById("modalClose");
 const toast = document.getElementById("toast");
 const featuredDeadline = document.getElementById("featuredDeadline");
-const featuredCategory = document.getElementById("featuredCategory");
-const featuredTitle = document.getElementById("featuredTitle");
-const featuredDuration = document.getElementById("featuredDuration");
-const featuredReward = document.getElementById("featuredReward");
 const featuredSurveyButton = document.getElementById("featuredSurveyButton");
 
 function escapeHTML(value) {
@@ -41,15 +37,9 @@ function formatReward(value) {
 function renderFeaturedSurvey() {
   if (!surveys.length) return;
   const survey = surveys[Math.floor(Math.random() * surveys.length)];
-  const dDayMatch = String(survey.deadline).match(/^D-(\d+)$/i);
-
-  featuredDeadline.textContent = dDayMatch ? `마감까지 ${dDayMatch[1]}일` : `마감 ${survey.deadline}`;
-  featuredCategory.textContent = survey.category;
-  featuredTitle.textContent = survey.title;
-  featuredDuration.textContent = `약 ${Number(survey.duration)}분`;
-  featuredReward.textContent = survey.reward;
+  featuredDeadline.textContent = "클릭 전까지 내용은 비밀이에요";
   featuredSurveyButton.dataset.surveyId = survey.id;
-  featuredSurveyButton.setAttribute("aria-label", `${survey.title} 추천 설문 자세히 보기`);
+  featuredSurveyButton.setAttribute("aria-label", "랜덤 설문과 경품 정보 확인하기");
 }
 
 function getFilteredSurveys() {

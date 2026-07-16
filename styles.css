@@ -1054,3 +1054,18 @@ body, button, input, select, textarea { font-family: Inter, Circular, -apple-sys
 .survey-page .preview-card { justify-self: center; transform: none; }
 .survey-page .auth-links { align-items: center; flex-direction: row; }
 .survey-page .auth-links a { justify-content: center; }
+
+.survey-page .random-pick-illustration { display: grid; min-height: 230px; place-items: center; background: #fff5f7; }
+.survey-page .random-pick-illustration::before, .survey-page .random-pick-illustration::after { display: none; }
+.survey-page .random-pick-illustration img { width: min(190px, 45%); height: auto; filter: drop-shadow(0 8px 10px rgba(224,11,65,.12)); }
+.survey-page .featured-mystery-copy { padding: 8px 0 2px; text-align: left; }
+.survey-page .featured-mystery-copy > span { display: inline-flex; padding: 5px 10px; color: var(--air-primary-active); background: #fff0f3; border-radius: 9999px; font-size: 11px; font-weight: 600; }
+.survey-page .featured-mystery-copy h2 { margin: 13px 0 7px; color: var(--air-ink); font-size: 27px; font-weight: 600; }
+.survey-page .featured-mystery-copy p { margin: 0; color: var(--air-muted); font-size: 14px; }
+
+@media (max-width: 470px) {
+  .survey-page .random-pick-illustration { min-height: 160px; }
+  .survey-page .random-pick-illustration img { width: min(130px, 48%); }
+  .survey-page .featured-mystery-copy h2 { font-size: 22px; }
+  .survey-page .featured-mystery-copy p { font-size: 12px; }
+}

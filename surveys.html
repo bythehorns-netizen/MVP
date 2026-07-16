@@ -56,21 +56,19 @@
           <div class="preview-head">
             <div>
               <p>RANDOM PICK · 추천 설문</p>
-              <span id="featuredDeadline">추천 설문을 고르는 중</span>
+              <span id="featuredDeadline">클릭 전까지 내용은 비밀이에요</span>
             </div>
             <span class="bookmark-icon" aria-hidden="true">↗</span>
           </div>
-          <div class="preview-illustration" aria-hidden="true">
-            <div class="speech speech-a">A</div>
-            <div class="speech speech-b">B</div>
-            <div class="speech speech-c">C</div>
-            <div class="cursor-shape">↖</div>
+          <div class="preview-illustration random-pick-illustration" aria-hidden="true">
+            <img src="./assets/random-shuffle.svg" alt="" />
           </div>
-          <span class="category-label" id="featuredCategory">추천</span>
-          <h2 id="featuredTitle">설문을 불러오는 중이에요</h2>
-          <div class="preview-meta"><span id="featuredDuration">예상 시간 확인 중</span><span>모바일 참여</span></div>
-          <div class="preview-reward"><span>추첨 경품</span><strong id="featuredReward">경품 확인 중</strong></div>
-          <span class="preview-cta">랜덤 추천 설문 참여하기 <b aria-hidden="true">→</b></span>
+          <div class="featured-mystery-copy">
+            <span>무작위 추천</span>
+            <h2>어떤 설문이 나올까요?</h2>
+            <p>응모 버튼을 누르면 설문과 경품 정보를 확인할 수 있어요.</p>
+          </div>
+          <span class="preview-cta">랜덤설문 응모하기 <b aria-hidden="true">→</b></span>
           <button class="preview-hit" id="featuredSurveyButton" type="button" aria-label="추천 설문 자세히 보기"></button>
         </article>
       </div>
@@ -168,6 +166,6 @@
   <script src="./survey-data.js" defer></script>
   <script src="/api/config.js" defer></script>
   <script src="./auth.js?v=20260716-3" defer></script>
-  <script src="./app.js?v=20260716-copy" defer></script>
+  <script src="./app.js?v=20260716-random" defer></script>
 </body>
 </html>
