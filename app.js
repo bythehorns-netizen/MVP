@@ -122,8 +122,8 @@ function openSurveyModal(id) {
   const participationAction = alreadyParticipated
     ? '<button class="button button-full participation-complete" type="button" disabled>이미 참여한 설문입니다</button>'
     : survey.surveyUrl
-      ? `<a class="button button-primary button-full" href="${escapeHTML(survey.surveyUrl)}" target="_blank" rel="noopener noreferrer" data-participate-survey="${escapeHTML(survey.id)}">설문 시작하기 <span aria-hidden="true">↗</span></a>`
-      : '<button class="button button-primary button-full" type="button" id="participateButton">안내 확인하고 참여하기</button>';
+      ? `<a class="button button-primary button-full" href="${escapeHTML(survey.surveyUrl)}" target="_blank" rel="noopener noreferrer" data-participate-survey="${escapeHTML(survey.id)}">설문 시작하기</a>`
+      : '<button class="button button-primary button-full" type="button" id="participateButton">설문 시작하기</button>';
   modalContent.innerHTML = `
     <p class="modal-kicker">${escapeHTML(survey.category)} · ${escapeHTML(survey.deadline)}</p>
     <h2 id="modalTitle">${escapeHTML(survey.title)}</h2>
