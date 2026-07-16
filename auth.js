@@ -6,6 +6,7 @@
 
   let activeSession = readJSON(SESSION_KEY, null);
   let currentUser = activeSession?.user ? normalizeUser(activeSession.user) : null;
+  let authReady = Promise.resolve(currentUser);
 
   function readJSON(key, fallback) {
     try {
@@ -72,10 +73,11 @@
   function normalizeParticipations(value) {
     return Array.isArray(value)
       ? value
-          .filter((item) => item?.surveyId && item?.startedAt)
+          .filter((item) => item?.surveyId && (item?.completedAt || item?.startedAt))
           .map((item) => ({
             surveyId: String(item.surveyId),
-            startedAt: String(item.startedAt)
+            startedAt: String(item.startedAt || item.completedAt),
+            completedAt: String(item.completedAt || item.startedAt)
           }))
       : [];
   }
@@ -115,6 +117,16 @@
 
   function getCurrentUser() {
     return currentUser;
+  }
+
+  function getAccessToken() {
+    return activeSession?.access_token || "";
+  }
+
+  function isMaster() {
+    if (!currentUser) return false;
+    return [currentUser.username, currentUser.displayId, currentUser.email?.split("@")[0]]
+      .some((value) => normalizeId(value) === "qwer");
   }
 
   async function refreshSessionIfNeeded() {
@@ -175,10 +187,8 @@
     if (!currentUser) return { ok: false, reason: "login-required" };
     if (hasParticipated(surveyId)) return { ok: false, reason: "duplicate" };
 
-    const nextRecords = [
-      ...currentUser.participations,
-      { surveyId: String(surveyId), startedAt: new Date().toISOString() }
-    ];
+    const completedAt = new Date().toISOString();
+    const nextRecords = [...currentUser.participations, { surveyId: String(surveyId), startedAt: completedAt, completedAt }];
     currentUser = { ...currentUser, participations: nextRecords };
     if (activeSession?.user) {
       const nextUser = {
@@ -194,7 +204,16 @@
     return { ok: true };
   }
 
-  window.MoaAuth = { getCurrentUser, logout, getParticipations, hasParticipated, registerParticipation };
+  window.MoaAuth = {
+    getCurrentUser,
+    getAccessToken,
+    isMaster,
+    whenReady: () => authReady,
+    logout,
+    getParticipations,
+    hasParticipated,
+    registerParticipation
+  };
 
   function escapeHTML(value) {
     return String(value ?? "")
@@ -218,6 +237,26 @@
   function renderAuthSlots() {
     document.querySelectorAll("[data-auth-slot]").forEach((slot) => renderSlot(slot));
     document.querySelectorAll("[data-auth-mobile]").forEach((slot) => renderSlot(slot, true));
+    document.querySelectorAll("[data-master-only]").forEach((element) => {
+      element.hidden = !isMaster();
+    });
+    renderMasterLauncher();
+  }
+
+  function renderMasterLauncher() {
+    const existing = document.getElementById("masterDrawLauncher");
+    if (!isMaster()) {
+      existing?.remove();
+      return;
+    }
+    if (existing || document.body.classList.contains("draw-page")) return;
+    const launcher = document.createElement("a");
+    launcher.id = "masterDrawLauncher";
+    launcher.className = "master-draw-launcher";
+    launcher.href = "./admin-draw.html";
+    launcher.setAttribute("aria-label", "마스터 경품 추첨 페이지로 이동");
+    launcher.innerHTML = '<span aria-hidden="true">◉</span><span><small>QWER MASTER</small><strong>경품 추첨</strong></span><b aria-hidden="true">→</b>';
+    document.body.append(launcher);
   }
 
   function safeNextPath() {
@@ -271,8 +310,8 @@
       ? participations.map((record) => {
           const survey = surveys.find((item) => String(item.id) === record.surveyId);
           const title = survey?.title || `설문 ${record.surveyId}`;
-          const date = new Intl.DateTimeFormat("ko-KR", { dateStyle: "medium", timeStyle: "short" }).format(new Date(record.startedAt));
-          return `<li><strong>${escapeHTML(title)}</strong><span>${escapeHTML(date)} 참여 시작</span></li>`;
+          const date = new Intl.DateTimeFormat("ko-KR", { dateStyle: "medium", timeStyle: "short" }).format(new Date(record.completedAt || record.startedAt));
+          return `<li><strong>${escapeHTML(title)}</strong><span>${escapeHTML(date)} 참여 완료</span></li>`;
         }).join("")
       : '<li class="participation-empty">아직 참여한 설문이 없어요.</li>';
   }
@@ -367,13 +406,17 @@
 
   renderAuthSlots();
   renderAuthPage();
-  fetchCurrentUser().then(() => {
+  authReady = fetchCurrentUser().then(() => {
     renderAuthSlots();
     renderAuthPage();
+    document.dispatchEvent(new CustomEvent("cashcheck:authchange"));
+    return currentUser;
   }).catch(() => {
     clearSession();
     renderAuthSlots();
     renderAuthPage();
+    document.dispatchEvent(new CustomEvent("cashcheck:authchange"));
+    return null;
   });
 
   const initialMode = new URLSearchParams(window.location.search).get("mode");

@@ -6,6 +6,7 @@
 - `surveys.html`: 설문 추천·검색·상세 정보를 제공하는 설문페이지
 - `auth.html`: 회원가입, 로그인, 참여 기록 확인 페이지
 - `survey-data.js`: 랜딩페이지와 설문페이지가 함께 사용하는 설문 데이터
+- `admin-draw.html`: `qwer` 마스터 계정 전용 Supabase 참여자 경품 추첨 화면
 
 ## 포함된 기능
 
@@ -17,6 +18,14 @@
 - 경품과 당첨 인원 안내
 - CASH CHECK 직접 추첨 원칙 안내
 - Supabase Auth 기반 아이디/비밀번호 회원가입 및 로그인
+- Supabase Auth 참여 기록 기반 설문별 돌림판 추첨과 결과 저장
+
+## 경품 추첨 방법
+
+1. `qwer` 계정으로 로그인하면 설문 페이지에 경품 추첨 버튼이 표시됩니다.
+2. 추첨 페이지는 Supabase Auth 사용자 메타데이터의 `participations` 기록을 설문별로 모읍니다.
+3. 돌림판을 누르면 서버가 암호학적 난수로 당첨자를 확정하고 회전 애니메이션을 재생합니다.
+4. 추첨 결과는 `qwer` 사용자의 `prize_draws` 메타데이터에 저장되므로 같은 설문을 중복 추첨하지 않습니다.
 
 ## 설문 데이터 수정 방법
 
@@ -35,6 +44,7 @@ Supabase Auth 연결을 위해 Vercel 프로젝트에 아래 환경변수가 필
 
 - `SUPABASE_URL`
 - `SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY` (서버의 마스터 추첨 API에서만 사용하며 브라우저에 노출하면 안 됩니다.)
 
 정적 HTML에서는 브라우저가 Vercel 환경변수를 직접 읽을 수 없으므로 `/api/config.js`가 위 값을 클라이언트 설정으로 전달합니다.
 
