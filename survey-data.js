@@ -1,4 +1,4 @@
-window.MOAFORM_SURVEYS = [
+const MOAFORM_SURVEYS = [
   {
     id: "life-001",
     title: "요즘 나의 소비 습관은?",
@@ -139,3 +139,6 @@ window.MOAFORM_SURVEYS = [
     ink: "#1d66aa"
   }
 ];
+
+if (typeof window !== "undefined") window.MOAFORM_SURVEYS = MOAFORM_SURVEYS;
+if (typeof module !== "undefined") module.exports = MOAFORM_SURVEYS;

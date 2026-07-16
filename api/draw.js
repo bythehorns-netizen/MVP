@@ -1,4 +1,5 @@
 const { randomInt, randomBytes } = require("crypto");
+const surveyDefinitions = require("../survey-data.js");
 
 const MASTER_ID = "qwer";
 
@@ -65,7 +66,18 @@ async function listAllUsers() {
 }
 
 function normalizeDraws(value) {
-  return Array.isArray(value) ? value.filter((draw) => draw?.surveyId && draw?.winner?.userId) : [];
+  return Array.isArray(value) ? value.filter((draw) => draw?.surveyId && drawWinners(draw).length) : [];
+}
+
+function drawWinners(draw) {
+  if (Array.isArray(draw?.winners)) return draw.winners.filter((winner) => winner?.userId);
+  return draw?.winner?.userId ? [draw.winner] : [];
+}
+
+function requiredWinnerCount(surveyId) {
+  const survey = surveyDefinitions.find((item) => String(item.id) === String(surveyId));
+  const match = String(survey?.reward || "").match(/\((\d+)명\)/);
+  return Math.max(1, Number(match?.[1] || 1));
 }
 
 function buildSurveyPools(users, masterUser) {
@@ -101,7 +113,8 @@ function publicDraw(draw) {
     surveyId: draw.surveyId,
     drawnAt: draw.drawnAt,
     participantCount: draw.participantCount,
-    winner: { userId: draw.winner.userId, name: draw.winner.name, phone: draw.winner.phone }
+    winnerCount: Number(draw.winnerCount || requiredWinnerCount(draw.surveyId)),
+    winners: drawWinners(draw).map((winner) => ({ userId: winner.userId, name: winner.name, phone: winner.phone }))
   };
 }
 
@@ -123,25 +136,18 @@ function viewerDraw(draw) {
     surveyId: draw.surveyId,
     drawnAt: draw.drawnAt,
     participantCount: draw.participantCount,
-    winner: { name: maskName(draw.winner.name), phoneMasked: maskPhone(draw.winner.phone) }
+    winnerCount: Number(draw.winnerCount || requiredWinnerCount(draw.surveyId)),
+    winners: drawWinners(draw).map((winner) => ({ name: maskName(winner.name), phoneMasked: maskPhone(winner.phone) }))
   };
 }
 
-function orderedParticipants(draw, currentParticipants) {
-  const participants = Array.isArray(currentParticipants) ? currentParticipants : [];
-  const participantIds = Array.isArray(draw?.participantIds) ? draw.participantIds : [];
-  if (!participantIds.length) return participants;
-  const participantMap = new Map(participants.map((person) => [person.userId, person]));
-  return participantIds.map((userId, index) => participantMap.get(userId) || { userId, name: `참여자 ${index + 1}` });
-}
-
-function winnerIndex(draw, participants) {
-  const index = participants.findIndex((person) => person.userId === draw?.winner?.userId);
-  return index >= 0 ? index : 0;
-}
-
-function viewerParticipants(participants) {
-  return participants.map((person) => ({ name: maskName(person.name) }));
+function selectWinners(participants, count) {
+  const candidates = [...participants];
+  for (let index = 0; index < count; index += 1) {
+    const selectedIndex = index + randomInt(candidates.length - index);
+    [candidates[index], candidates[selectedIndex]] = [candidates[selectedIndex], candidates[index]];
+  }
+  return candidates.slice(0, count);
 }
 
 async function saveDraw(masterUser, draws) {
@@ -172,25 +178,16 @@ module.exports = async function handler(request, response) {
     if (request.method === "GET") {
       if (!canDraw) {
         const surveys = draws
-          .map((draw) => {
-            const participants = orderedParticipants(draw, pools.get(draw.surveyId));
-            return {
-              surveyId: draw.surveyId,
-              participants: viewerParticipants(participants),
-              winnerIndex: winnerIndex(draw, participants),
-              draw: viewerDraw(draw)
-            };
-          })
+          .map((draw) => ({ surveyId: draw.surveyId, winnerCount: requiredWinnerCount(draw.surveyId), draw: viewerDraw(draw) }))
           .sort((a, b) => new Date(b.draw.drawnAt) - new Date(a.draw.drawnAt));
         return json(response, 200, { canDraw: false, surveys });
       }
-      const surveys = [...pools.entries()].map(([surveyId, currentParticipants]) => {
+      const surveys = [...pools.entries()].map(([surveyId, participants]) => {
         const draw = draws.find((item) => item.surveyId === surveyId);
-        const participants = draw ? orderedParticipants(draw, currentParticipants) : currentParticipants;
         return {
           surveyId,
           participants: participants.map(publicParticipant),
-          winnerIndex: draw ? winnerIndex(draw, participants) : null,
+          winnerCount: requiredWinnerCount(surveyId),
           draw: draw ? publicDraw(draw) : null
         };
       });
@@ -200,20 +197,19 @@ module.exports = async function handler(request, response) {
     const surveyId = String(request.body?.surveyId || "").trim();
     const participants = pools.get(surveyId) || [];
     if (!surveyId || !participants.length) return json(response, 400, { error: "empty-participant-pool" });
+    const winnerCount = requiredWinnerCount(surveyId);
     const previous = draws.find((draw) => draw.surveyId === surveyId);
-    if (previous) {
-      const previousParticipants = orderedParticipants(previous, participants);
-      return json(response, 200, { draw: publicDraw(previous), participants: previousParticipants.map(publicParticipant), existing: true });
-    }
+    if (previous) return json(response, 200, { draw: publicDraw(previous), participants: participants.map(publicParticipant), existing: true });
+    if (participants.length < winnerCount) return json(response, 409, { error: "insufficient-participants", required: winnerCount, available: participants.length });
 
-    const winner = participants[randomInt(participants.length)];
+    const winners = selectWinners(participants, winnerCount);
     const draw = {
       id: `CC-${new Date().toISOString().slice(0, 10).replaceAll("-", "")}-${randomBytes(6).toString("hex").toUpperCase()}`,
       surveyId,
       drawnAt: new Date().toISOString(),
       participantCount: participants.length,
-      participantIds: participants.map((person) => person.userId),
-      winner: { userId: winner.userId, name: winner.name, phone: winner.phone }
+      winnerCount,
+      winners: winners.map((winner) => ({ userId: winner.userId, name: winner.name, phone: winner.phone }))
     };
     await saveDraw(masterUser, [...draws, draw]);
     return json(response, 200, { draw: publicDraw(draw), participants: participants.map(publicParticipant), existing: false });

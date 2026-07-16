@@ -511,21 +511,27 @@ button { color: inherit; }
 .wheel-card-head h3 { margin: 5px 0; font-size: 20px; letter-spacing: -.7px; }
 .wheel-card-head p { margin: 0; color: #777; font-size: 12px; }
 .wheel-card-head > b { display: grid; min-width: 46px; height: 46px; place-items: center; border-radius: 50%; background: #171717; color: #c8ff47; font: 800 16px "Manrope", sans-serif; }
-.wheel-stage { position: relative; display: flex; width: min(100%, 440px); margin: 28px auto 20px; justify-content: center; }
-.prize-wheel { display: block; border-radius: 50%; filter: drop-shadow(0 12px 18px rgba(0,0,0,.16)); will-change: transform; }
-.wheel-pointer { position: absolute; top: -11px; left: 50%; width: 0; height: 0; border-top: 28px solid #171717; border-left: 16px solid transparent; border-right: 16px solid transparent; transform: translateX(-50%); z-index: 2; filter: drop-shadow(0 3px 2px rgba(0,0,0,.25)); }
-.wheel-result { min-height: 93px; padding: 16px; margin: 14px 0; border-radius: 14px; }
-.wheel-result.pending { display: flex; align-items: center; justify-content: center; flex-direction: column; background: #f3f4ef; color: #777; }
-.wheel-result.pending span { color: #333; font-size: 13px; font-weight: 800; }
-.wheel-result p { margin: 4px 0; font-size: 11px; }
-.wheel-result.complete { background: #efffd0; border: 1px solid #c6ed70; text-align: center; }
-.wheel-result.complete span { display: block; color: #607d17; font-size: 11px; font-weight: 800; }
-.wheel-result.complete strong { display: block; margin: 3px 0; font-size: 23px; }
-.wheel-result.complete small { color: #76902f; font: 600 9px "Manrope", sans-serif; }
 .wheel-spin-button { width: 100%; min-height: 52px; }
 .wheel-spin-button:disabled { cursor: default; opacity: .75; }
-.viewer-result-card .wheel-result { margin-top: 28px; }
 .draw-viewer-note { margin: 16px 0 0; color: #777; font-size: 11px; line-height: 1.6; text-align: center; }
+.wheel-card-head > b { min-width: 54px; padding: 0 8px; white-space: nowrap; }
+.draw-winner-result { margin: 26px 0 18px; padding: 20px; border: 1px solid #e1e1dc; border-radius: 16px; background: #fafaf8; }
+.draw-winner-result.complete { border-color: #ffd1da; background: #fff5f7; }
+.draw-winner-result-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+.draw-winner-result-head span { color: var(--air-primary); font-size: 11px; font-weight: 800; }
+.draw-winner-result-head h4 { margin: 4px 0 0; font-size: 19px; letter-spacing: -.5px; }
+.draw-result-meta { max-width: 240px; margin: 0; color: #777; font-size: 10px; line-height: 1.5; text-align: right; overflow-wrap: anywhere; }
+.draw-winner-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; padding: 0; margin: 0; list-style: none; }
+.draw-winner-slot { min-width: 0; display: grid; grid-template-columns: 34px minmax(0, 1fr); align-items: center; gap: 11px; padding: 13px; border: 1px dashed #d5d5cf; border-radius: 12px; background: #fff; }
+.draw-winner-slot > span { width: 34px; height: 34px; display: grid; place-items: center; color: #777; background: #f1f1ed; border-radius: 50%; font: 800 12px "Manrope", sans-serif; }
+.draw-winner-slot small, .draw-winner-slot p { display: block; margin: 0; color: #888; font-size: 9px; line-height: 1.45; }
+.draw-winner-slot strong { display: block; margin: 2px 0; overflow: hidden; color: #aaa; font-size: 15px; text-overflow: ellipsis; white-space: nowrap; }
+.draw-winner-slot.complete { border-style: solid; border-color: #ffc2ce; box-shadow: 0 5px 14px rgba(224,11,65,.08); animation: winner-reveal .42s var(--winner-delay) both ease-out; }
+.draw-winner-slot.complete > span { color: #fff; background: var(--air-primary); }
+.draw-winner-slot.complete strong { color: var(--air-ink); }
+.draw-reveal-loading { min-height: 230px; display: flex; align-items: center; justify-content: center; flex-direction: column; color: var(--air-ink); }
+.draw-reveal-loading .loading-spinner { margin-bottom: 14px; border-top-color: var(--air-primary); }
+@keyframes winner-reveal { from { opacity: 0; transform: translateY(12px) scale(.97); } to { opacity: 1; transform: none; } }
 .draw-toast { position: fixed; left: 50%; bottom: 28px; padding: 13px 20px; border-radius: 24px; background: #171717; color: #fff; font-size: 13px; font-weight: 700; opacity: 0; pointer-events: none; transform: translate(-50%, 18px); transition: .25s; z-index: 100; }
 .draw-toast.show { opacity: 1; transform: translate(-50%, 0); }
 .confetti-piece { position: absolute; top: -14px; left: var(--x); width: 9px; height: 15px; background: var(--color); animation: confetti-fall 2s var(--delay) ease-in forwards; z-index: 3; }
@@ -539,6 +545,10 @@ button { color: inherit; }
   .draw-board-heading { align-items: flex-start; flex-direction: column; gap: 10px; }
   .wheel-card { padding: 20px 16px; }
   .wheel-card-head h3 { font-size: 17px; }
+  .draw-winner-result { padding: 15px; }
+  .draw-winner-result-head { align-items: flex-start; flex-direction: column; }
+  .draw-result-meta { max-width: none; text-align: left; }
+  .draw-winner-list { grid-template-columns: 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {
