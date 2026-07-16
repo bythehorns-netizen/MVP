@@ -62,7 +62,6 @@ function getFilteredSurveys() {
 }
 
 function createSurveyCard(survey) {
-  const filledPercentage = Math.max(5, Math.min(100, ((survey.slots - survey.remaining) / survey.slots) * 100));
   return `
     <article class="survey-card" style="--card-color:${escapeHTML(survey.color)};--card-ink:${escapeHTML(survey.ink)}">
       <div class="card-top">
@@ -73,12 +72,12 @@ function createSurveyCard(survey) {
       <p class="description">${escapeHTML(survey.description)}</p>
       <div class="card-facts">
         <span>◷ 약 ${Number(survey.duration)}분</span>
-        <span>◎ ${Number(survey.slots)}명 모집</span>
+        <span>◎ 최소 ${Number(survey.slots)}명 모집</span>
       </div>
       <span class="privacy-badge">${escapeHTML(survey.privacy)}만 수집</span>
       <div class="card-bottom">
         <div><span class="reward-label">추첨 경품</span><strong class="reward-value">${formatReward(survey.reward)}</strong></div>
-        <div class="slots"><span>${Number(survey.remaining)}자리 남음</span><div class="slot-track"><i style="width:${filledPercentage}%"></i></div></div>
+        <div class="slots"><span>남은 시간</span><strong>${escapeHTML(survey.deadline)}</strong></div>
       </div>
       <button class="card-hit" type="button" data-survey-id="${escapeHTML(survey.id)}" aria-label="${escapeHTML(survey.title)} 자세히 보기"></button>
     </article>`;
@@ -120,7 +119,7 @@ function openSurveyModal(id) {
     <div class="modal-facts">
       <div><span>예상 시간</span><strong>약 ${Number(survey.duration)}분</strong></div>
       <div><span>추첨 경품</span><strong>${formatReward(survey.reward)}</strong></div>
-      <div><span>남은 자리</span><strong>${Number(survey.remaining)}명</strong></div>
+      <div><span>남은 시간</span><strong>${escapeHTML(survey.deadline)}</strong></div>
     </div>
     <div class="draw-box">
       <strong>◎ CASH CHECK가 직접 추첨해요</strong>

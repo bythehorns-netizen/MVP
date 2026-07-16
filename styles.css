@@ -197,8 +197,7 @@ button { color: inherit; }
 .reward-value { display: block; color: var(--blue); font: 800 14px/1.45 "Manrope", "Noto Sans KR", sans-serif; word-break: keep-all; }
 .slots { flex: 0 0 auto; text-align: right; }
 .slots span { display: block; margin-bottom: 7px; color: var(--muted); font-size: 10px; }
-.slot-track { width: 78px; height: 5px; overflow: hidden; background: #eceef2; border-radius: 99px; }
-.slot-track i { display: block; height: 100%; background: var(--coral); border-radius: inherit; }
+.slots strong { display: block; font-size: 13px; }
 .card-hit { position: absolute; inset: 0; border: 0; background: transparent; cursor: pointer; }
 .survey-card h3, .survey-card .card-top, .survey-card .description, .survey-card .card-facts, .survey-card .privacy-badge, .survey-card .card-bottom { position: relative; pointer-events: none; }
 .empty-state { padding: 70px 20px; text-align: center; border: 1px dashed #cfd2da; border-radius: 20px; }
@@ -577,8 +576,6 @@ a:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid 
 .privacy-badge::before { color: #1ed760; }
 .card-bottom { border-color: #333; }
 .reward-value { color: #fff; font-family: var(--spotify-font); }
-.slot-track { background: #3b3b3b; }
-.slot-track i { background: #1ed760; }
 .card-hit:focus-visible { outline: 3px solid #1ed760; outline-offset: -4px; border-radius: 8px; }
 .empty-state { color: #fff; background: #181818; border-color: #4d4d4d; border-radius: 8px; }
 .empty-state p { color: #b3b3b3; }
