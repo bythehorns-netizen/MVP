@@ -116,12 +116,21 @@
     elements.refresh.textContent = "결과 새로고침";
   }
 
+  function pointWheelAtWinner(canvas, item) {
+    const count = Array.isArray(item.participants) ? item.participants.length : 0;
+    const index = Number(item.winnerIndex);
+    if (!canvas || !item.draw || !count || !Number.isInteger(index) || index < 0 || index >= count) return;
+    const slice = 360 / count;
+    canvas.style.transition = "none";
+    canvas.style.transform = `rotate(${-(index * slice + slice / 2)}deg)`;
+  }
+
   function wheelCard(item) {
     const survey = surveyInfo(item.surveyId);
     const completed = Boolean(item.draw);
     const participants = Array.isArray(item.participants) ? item.participants : [];
-    const participantCount = participants.length || Number(item.draw?.participantCount || 0);
-    const wheel = state.canDraw ? `<div class="wheel-stage"><div class="wheel-pointer" aria-hidden="true"></div><canvas class="prize-wheel" data-wheel-canvas="${escapeHTML(item.surveyId)}" aria-label="${escapeHTML(survey.title)} 참여자 돌림판"></canvas></div>` : "";
+    const participantCount = state.canDraw ? participants.length : Number(item.draw?.participantCount || participants.length);
+    const wheel = participants.length ? `<div class="wheel-stage"><div class="wheel-pointer" aria-hidden="true"></div><canvas class="prize-wheel" data-wheel-canvas="${escapeHTML(item.surveyId)}" aria-label="${escapeHTML(survey.title)} ${state.canDraw ? "참여자" : "추첨 결과"} 돌림판"></canvas></div>` : "";
     const action = state.canDraw
       ? `<button class="button ${completed ? "button-ghost" : "button-primary"} wheel-spin-button" type="button" data-spin-survey="${escapeHTML(item.surveyId)}" ${completed ? "disabled" : ""}>${completed ? "추첨 완료" : "돌림판 돌리기"}</button>`
       : '<p class="draw-viewer-note">이 결과는 CASH CHECK 마스터 추첨을 통해 확정되었습니다.</p>';
@@ -135,7 +144,12 @@
 
   function renderBoard() {
     elements.grid.innerHTML = state.surveys.map(wheelCard).join("");
-    if (state.canDraw) state.surveys.forEach((item) => drawWheel(elements.grid.querySelector(`[data-wheel-canvas="${CSS.escape(item.surveyId)}"]`), item.participants));
+    state.surveys.forEach((item) => {
+      const canvas = elements.grid.querySelector(`[data-wheel-canvas="${CSS.escape(item.surveyId)}"]`);
+      if (!canvas || !Array.isArray(item.participants) || !item.participants.length) return;
+      drawWheel(canvas, item.participants);
+      pointWheelAtWinner(canvas, item);
+    });
   }
 
   async function loadDrawData() {
@@ -178,6 +192,7 @@
       const item = state.surveys.find((survey) => survey.surveyId === surveyId);
       item.participants = payload.participants;
       const winnerIndex = item.participants.findIndex((person) => person.userId === payload.draw.winner.userId);
+      item.winnerIndex = winnerIndex;
       const canvas = elements.grid.querySelector(`[data-wheel-canvas="${CSS.escape(surveyId)}"]`);
       drawWheel(canvas, item.participants);
       const slice = 360 / item.participants.length;
