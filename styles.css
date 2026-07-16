@@ -952,7 +952,9 @@ body, button, input, select, textarea { font-family: Inter, Circular, -apple-sys
 .survey-card h3, .reward-value { color: var(--air-ink); }
 .survey-card .description, .card-facts, .slots span, .reward-label { color: var(--air-muted); }
 .card-bottom { border-color: var(--air-line-soft); }
-.load-more-button { color: var(--air-ink); background: #fff; border-color: var(--air-ink); border-radius: 8px; text-transform: none; }
+.load-more-button { width: fit-content; min-width: 0; min-height: 38px; padding: 0 14px; color: var(--air-ink); background: #fff; border-color: var(--air-line); border-radius: 8px; font-size: 12px; text-transform: none; box-shadow: 0 3px 9px rgba(0,0,0,.09), 0 8px 18px rgba(0,0,0,.06); }
+.load-more-button span { margin-left: 5px; color: var(--air-ink); font-size: 13px; }
+.load-more-button:hover { border-color: var(--air-ink); box-shadow: 0 5px 12px rgba(0,0,0,.11), 0 12px 24px rgba(0,0,0,.08); transform: translateY(-2px); }
 
 .process-section { padding: 64px 0; color: var(--air-ink); background: var(--air-soft); }
 .process-intro > p:not(.kicker), .process-list p { color: var(--air-muted); }
