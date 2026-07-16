@@ -42,16 +42,13 @@ function isMaster(user) {
   return String(user?.email || "").trim().toLowerCase() === `${MASTER_ID}@cashcheck.local`;
 }
 
-async function verifyMaster(request) {
+async function verifyUser(request) {
   const authorization = String(request.headers.authorization || "");
   const token = authorization.startsWith("Bearer ") ? authorization.slice(7) : "";
   if (!token) {
     const error = new Error("login-required"); error.status = 401; throw error;
   }
   const user = await supabaseRequest("/auth/v1/user", { token });
-  if (!isMaster(user)) {
-    const error = new Error("master-only"); error.status = 403; throw error;
-  }
   return user;
 }
 
@@ -108,6 +105,28 @@ function publicDraw(draw) {
   };
 }
 
+function maskName(value) {
+  const characters = [...String(value || "당첨자").trim()];
+  if (characters.length <= 1) return "*";
+  if (characters.length === 2) return `${characters[0]}*`;
+  return `${characters[0]}${"*".repeat(characters.length - 2)}${characters.at(-1)}`;
+}
+
+function maskPhone(value) {
+  const digits = String(value || "").replace(/\D/g, "");
+  return digits.length >= 8 ? `${digits.slice(0, 3)}-****-${digits.slice(-4)}` : "연락처 비공개";
+}
+
+function viewerDraw(draw) {
+  return {
+    id: draw.id,
+    surveyId: draw.surveyId,
+    drawnAt: draw.drawnAt,
+    participantCount: draw.participantCount,
+    winner: { name: maskName(draw.winner.name), phoneMasked: maskPhone(draw.winner.phone) }
+  };
+}
+
 async function saveDraw(masterUser, draws) {
   const metadata = { ...(masterUser.user_metadata || {}), prize_draws: draws };
   return supabaseRequest(`/auth/v1/admin/users/${encodeURIComponent(masterUser.id)}`, {
@@ -120,18 +139,32 @@ async function saveDraw(masterUser, draws) {
 module.exports = async function handler(request, response) {
   if (!["GET", "POST"].includes(request.method)) return json(response, 405, { error: "method-not-allowed" });
   try {
-    const masterUser = await verifyMaster(request);
+    const requester = await verifyUser(request);
+    const canDraw = isMaster(requester);
+    if (request.method === "POST" && !canDraw) {
+      const error = new Error("master-only"); error.status = 403; throw error;
+    }
     const users = await listAllUsers();
+    const masterUser = users.find(isMaster) || (canDraw ? requester : null);
+    if (!masterUser) {
+      const error = new Error("master-account-not-found"); error.status = 404; throw error;
+    }
     const pools = buildSurveyPools(users, masterUser);
     const draws = normalizeDraws(masterUser.user_metadata?.prize_draws);
 
     if (request.method === "GET") {
+      if (!canDraw) {
+        const surveys = draws
+          .map((draw) => ({ surveyId: draw.surveyId, draw: viewerDraw(draw) }))
+          .sort((a, b) => new Date(b.draw.drawnAt) - new Date(a.draw.drawnAt));
+        return json(response, 200, { canDraw: false, surveys });
+      }
       const surveys = [...pools.entries()].map(([surveyId, participants]) => ({
         surveyId,
         participants: participants.map(publicParticipant),
         draw: draws.find((draw) => draw.surveyId === surveyId) ? publicDraw(draws.find((draw) => draw.surveyId === surveyId)) : null
       }));
-      return json(response, 200, { surveys });
+      return json(response, 200, { canDraw: true, surveys });
     }
 
     const surveyId = String(request.body?.surveyId || "").trim();

@@ -2,11 +2,13 @@
   "use strict";
 
   const COLORS = ["#ff385c", "#ffd1da", "#f7c7d2", "#f2f2f2", "#ff8fa5", "#ebebeb", "#e00b41", "#ffc2ce"];
-  const state = { surveys: [], spinning: new Set() };
+  const state = { surveys: [], spinning: new Set(), canDraw: false };
   const $ = (id) => document.getElementById(id);
   const elements = {
     loading: $("drawLoading"), denied: $("drawDenied"), empty: $("drawEmpty"), error: $("drawError"),
-    errorMessage: $("drawErrorMessage"), heading: $("drawBoardHeading"), grid: $("wheelGrid"), toast: $("drawToast")
+    errorMessage: $("drawErrorMessage"), heading: $("drawBoardHeading"), grid: $("wheelGrid"), toast: $("drawToast"),
+    badge: $("drawRoleBadge"), heroKicker: $("drawHeroKicker"), heroTitle: $("drawHeroTitle"), heroDescription: $("drawHeroDescription"),
+    emptyTitle: $("drawEmptyTitle"), emptyDescription: $("drawEmptyDescription"), boardLabel: $("drawBoardLabel"), boardTitle: $("drawBoardTitle"), refresh: $("refreshDrawData")
   };
   let toastTimer;
 
@@ -86,23 +88,54 @@
   function resultMarkup(draw) {
     if (!draw) return '<div class="wheel-result pending"><span>추첨 전</span><p>버튼을 누르면 서버에서 당첨자가 확정됩니다.</p></div>';
     const time = new Intl.DateTimeFormat("ko-KR", { dateStyle: "medium", timeStyle: "short" }).format(new Date(draw.drawnAt));
-    return `<div class="wheel-result complete"><span>🎉 당첨자</span><strong>${escapeHTML(draw.winner.name)}</strong><p>${escapeHTML(maskPhone(draw.winner.phone))} · ${escapeHTML(time)}</p><small>추첨 ID ${escapeHTML(draw.id)}</small></div>`;
+    const phone = draw.winner.phoneMasked || maskPhone(draw.winner.phone);
+    return `<div class="wheel-result complete"><span>🎉 당첨자</span><strong>${escapeHTML(draw.winner.name)}</strong><p>${escapeHTML(phone)} · ${escapeHTML(time)}</p><small>추첨 ID ${escapeHTML(draw.id)}</small></div>`;
+  }
+
+  function applyMode() {
+    if (state.canDraw) {
+      elements.badge.textContent = "qwer 마스터 · 추첨 가능";
+      elements.heroKicker.textContent = "MASTER RANDOM DRAW";
+      elements.heroTitle.innerHTML = "완료된 설문별로<br />행운의 주인공을 뽑아보세요.";
+      elements.heroDescription.textContent = "Supabase에 기록된 참여자만 돌림판에 들어갑니다. 서버에서 당첨자를 확정하고 기록한 뒤 결과를 공개합니다.";
+      elements.emptyTitle.textContent = "추첨할 설문 기록이 없습니다.";
+      elements.emptyDescription.textContent = "회원의 설문 참여 기록이 저장되면 설문별 돌림판이 생성됩니다.";
+      elements.boardLabel.textContent = "COMPLETED SURVEYS";
+      elements.boardTitle.textContent = "설문별 돌림판";
+      elements.refresh.textContent = "참여 기록 새로고침";
+      return;
+    }
+    elements.badge.textContent = "회원 열람 가능";
+    elements.heroKicker.textContent = "PRIZE DRAW RESULTS";
+    elements.heroTitle.innerHTML = "완료된 설문의<br />당첨 결과를 확인하세요.";
+    elements.heroDescription.textContent = "추첨은 qwer 마스터 계정에서만 진행하며, 완료된 결과는 모든 로그인 사용자에게 공개합니다.";
+    elements.emptyTitle.textContent = "아직 공개된 추첨 결과가 없습니다.";
+    elements.emptyDescription.textContent = "추첨이 완료되면 설문별 당첨 결과가 여기에 공개됩니다.";
+    elements.boardLabel.textContent = "DRAW RESULTS";
+    elements.boardTitle.textContent = "공개된 당첨 결과";
+    elements.refresh.textContent = "결과 새로고침";
   }
 
   function wheelCard(item) {
     const survey = surveyInfo(item.surveyId);
     const completed = Boolean(item.draw);
-    return `<article class="wheel-card" data-wheel-card="${escapeHTML(item.surveyId)}">
-      <div class="wheel-card-head"><div><span>${completed ? "추첨 완료" : "추첨 대기"}</span><h3>${escapeHTML(survey.title)}</h3><p>${escapeHTML(survey.reward || "경품")} · 참여자 ${item.participants.length}명</p></div><b>${item.participants.length}</b></div>
-      <div class="wheel-stage"><div class="wheel-pointer" aria-hidden="true"></div><canvas class="prize-wheel" data-wheel-canvas="${escapeHTML(item.surveyId)}" aria-label="${escapeHTML(survey.title)} 참여자 돌림판"></canvas></div>
+    const participants = Array.isArray(item.participants) ? item.participants : [];
+    const participantCount = participants.length || Number(item.draw?.participantCount || 0);
+    const wheel = state.canDraw ? `<div class="wheel-stage"><div class="wheel-pointer" aria-hidden="true"></div><canvas class="prize-wheel" data-wheel-canvas="${escapeHTML(item.surveyId)}" aria-label="${escapeHTML(survey.title)} 참여자 돌림판"></canvas></div>` : "";
+    const action = state.canDraw
+      ? `<button class="button ${completed ? "button-ghost" : "button-primary"} wheel-spin-button" type="button" data-spin-survey="${escapeHTML(item.surveyId)}" ${completed ? "disabled" : ""}>${completed ? "추첨 완료" : "돌림판 돌리기"}</button>`
+      : '<p class="draw-viewer-note">이 결과는 CASH CHECK 마스터 추첨을 통해 확정되었습니다.</p>';
+    return `<article class="wheel-card${state.canDraw ? "" : " viewer-result-card"}" data-wheel-card="${escapeHTML(item.surveyId)}">
+      <div class="wheel-card-head"><div><span>${completed ? "추첨 완료" : "추첨 대기"}</span><h3>${escapeHTML(survey.title)}</h3><p>${escapeHTML(survey.reward || "경품")} · 참여자 ${participantCount}명</p></div><b>${participantCount}</b></div>
+      ${wheel}
       <div data-wheel-result="${escapeHTML(item.surveyId)}">${resultMarkup(item.draw)}</div>
-      <button class="button ${completed ? "button-ghost" : "button-primary"} wheel-spin-button" type="button" data-spin-survey="${escapeHTML(item.surveyId)}" ${completed ? "disabled" : ""}>${completed ? "추첨 완료" : "돌림판 돌리기"}</button>
+      ${action}
     </article>`;
   }
 
   function renderBoard() {
     elements.grid.innerHTML = state.surveys.map(wheelCard).join("");
-    state.surveys.forEach((item) => drawWheel(elements.grid.querySelector(`[data-wheel-canvas="${CSS.escape(item.surveyId)}"]`), item.participants));
+    if (state.canDraw) state.surveys.forEach((item) => drawWheel(elements.grid.querySelector(`[data-wheel-canvas="${CSS.escape(item.surveyId)}"]`), item.participants));
   }
 
   async function loadDrawData() {
@@ -115,6 +148,8 @@
         return;
       }
       const payload = await drawRequest();
+      state.canDraw = payload.canDraw === true;
+      applyMode();
       state.surveys = Array.isArray(payload.surveys) ? payload.surveys : [];
       if (!state.surveys.length) { setView("empty"); return; }
       renderBoard(); setView("board");
@@ -136,7 +171,7 @@
   }
 
   async function spin(surveyId, button) {
-    if (state.spinning.has(surveyId)) return;
+    if (!state.canDraw || state.spinning.has(surveyId)) return;
     state.spinning.add(surveyId); button.disabled = true; button.textContent = "당첨자를 확인하는 중…";
     try {
       const payload = await drawRequest("POST", { surveyId });
