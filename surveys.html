@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Manrope:wght@500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="icon" type="image/png" href="./assets/cash-check-logo.png" />
-  <link rel="stylesheet" href="./styles.css?v=20260716-product-nav" />
+  <link rel="stylesheet" href="./styles.css?v=20260716-duration-filter" />
 </head>
 <body class="survey-page">
   <a class="skip-link" href="#survey-board">설문 목록으로 바로가기</a>
@@ -109,6 +109,15 @@
               <span class="filter-label">경품별</span>
               <div class="filter-tabs reward-filters" id="rewardFilters" role="group" aria-label="설문 경품 필터"></div>
             </div>
+            <div class="filter-row">
+              <span class="filter-label">소요 시간</span>
+              <div class="filter-tabs" id="durationFilters" role="group" aria-label="설문 소요 시간 필터">
+                <button class="filter-chip active" type="button" data-duration="all">전체 시간</button>
+                <button class="filter-chip" type="button" data-duration="short">5분 이하</button>
+                <button class="filter-chip" type="button" data-duration="medium">6~10분</button>
+                <button class="filter-chip" type="button" data-duration="long">11분 이상</button>
+              </div>
+            </div>
           </div>
           <label class="search-box">
             <span aria-hidden="true">⌕</span>
@@ -121,7 +130,7 @@
         <div class="empty-state" id="emptyState" hidden>
           <span>⌕</span>
           <h3>조건에 맞는 설문이 없어요</h3>
-          <p>다른 검색어나 카테고리로 찾아보세요.</p>
+          <p>다른 검색어나 필터 조건으로 찾아보세요.</p>
           <button class="button button-ghost" id="resetFilters" type="button">필터 초기화</button>
         </div>
         <div class="load-more-wrap" id="loadMoreWrap" hidden>
@@ -190,6 +199,6 @@
   <script src="./survey-data.js" defer></script>
   <script src="/api/config.js" defer></script>
   <script src="./auth.js?v=20260716-3" defer></script>
-  <script src="./app.js?v=20260716-reward-filter" defer></script>
+  <script src="./app.js?v=20260716-duration-filter" defer></script>
 </body>
 </html>

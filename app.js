@@ -4,6 +4,7 @@ const SURVEYS_PER_PAGE = 6;
 let surveys = [...sampleSurveys];
 let selectedCategory = "전체";
 let selectedReward = "전체";
+let selectedDuration = "all";
 let visibleSurveyCount = SURVEYS_PER_PAGE;
 let toastTimer;
 
@@ -13,6 +14,7 @@ const emptyState = document.getElementById("emptyState");
 const searchInput = document.getElementById("searchInput");
 const categoryFilters = document.getElementById("categoryFilters");
 const rewardFilters = document.getElementById("rewardFilters");
+const durationFilters = document.getElementById("durationFilters");
 const resetFilters = document.getElementById("resetFilters");
 const loadMoreWrap = document.getElementById("loadMoreWrap");
 const loadMoreButton = document.getElementById("loadMoreButton");
@@ -55,13 +57,22 @@ function renderFeaturedSurvey() {
   featuredSurveyButton.setAttribute("aria-label", "랜덤 설문과 경품 정보 확인하기");
 }
 
+function matchesDuration(duration) {
+  const minutes = Number(duration);
+  if (selectedDuration === "short") return minutes <= 5;
+  if (selectedDuration === "medium") return minutes >= 6 && minutes <= 10;
+  if (selectedDuration === "long") return minutes >= 11;
+  return true;
+}
+
 function getFilteredSurveys() {
   const keyword = searchInput.value.trim().toLocaleLowerCase("ko-KR");
   return surveys.filter((survey) => {
     const categoryMatch = selectedCategory === "전체" || survey.category === selectedCategory;
     const rewardMatch = selectedReward === "전체" || getRewardBrand(survey.reward) === selectedReward;
+    const durationMatch = matchesDuration(survey.duration);
     const haystack = `${survey.title} ${survey.description} ${survey.category} ${survey.reward}`.toLocaleLowerCase("ko-KR");
-    return categoryMatch && rewardMatch && (!keyword || haystack.includes(keyword));
+    return categoryMatch && rewardMatch && durationMatch && (!keyword || haystack.includes(keyword));
   });
 }
 
@@ -182,6 +193,15 @@ rewardFilters.addEventListener("click", (event) => {
   renderSurveys();
 });
 
+durationFilters.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-duration]");
+  if (!button) return;
+  selectedDuration = button.dataset.duration;
+  visibleSurveyCount = SURVEYS_PER_PAGE;
+  durationFilters.querySelectorAll(".filter-chip").forEach((chip) => chip.classList.toggle("active", chip === button));
+  renderSurveys();
+});
+
 searchInput.addEventListener("input", () => {
   visibleSurveyCount = SURVEYS_PER_PAGE;
   renderSurveys();
@@ -189,10 +209,12 @@ searchInput.addEventListener("input", () => {
 resetFilters.addEventListener("click", () => {
   selectedCategory = "전체";
   selectedReward = "전체";
+  selectedDuration = "all";
   searchInput.value = "";
   visibleSurveyCount = SURVEYS_PER_PAGE;
   categoryFilters.querySelectorAll(".filter-chip").forEach((chip) => chip.classList.toggle("active", chip.dataset.category === "전체"));
   rewardFilters.querySelectorAll(".filter-chip").forEach((chip) => chip.classList.toggle("active", chip.dataset.reward === "전체"));
+  durationFilters.querySelectorAll(".filter-chip").forEach((chip) => chip.classList.toggle("active", chip.dataset.duration === "all"));
   renderSurveys();
 });
 

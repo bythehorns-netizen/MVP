@@ -173,7 +173,7 @@ button { color: inherit; }
 .survey-toolbar { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; margin: 42px 0 30px; }
 .filter-groups { min-width: 0; display: grid; gap: 12px; }
 .filter-row { min-width: 0; display: flex; align-items: center; gap: 12px; }
-.filter-label { flex: 0 0 44px; color: var(--muted); font-size: 12px; font-weight: 700; }
+.filter-label { flex: 0 0 56px; color: var(--muted); font-size: 12px; font-weight: 700; white-space: nowrap; }
 .filter-tabs { min-width: 0; flex: 1; display: flex; flex-wrap: wrap; gap: 8px; }
 .filter-chip { padding: 10px 16px; border: 1px solid var(--line); border-radius: 999px; background: white; color: #5b6271; font-size: 13px; font-weight: 600; cursor: pointer; transition: .18s; }
 .filter-chip:hover, .filter-chip.active { border-color: var(--navy); background: var(--navy); color: white; }
